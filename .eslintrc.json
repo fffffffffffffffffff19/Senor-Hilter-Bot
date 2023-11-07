@@ -10,11 +10,12 @@
     },
     "rules": {
         "indent": ["error", 4],
-        "max-lines": ["error", 150],
+        "max-len": ["error", 125],
         "linebreak-style": "off",
         "no-param-reassign": "off",
         "no-restricted-syntax": "off",
         "import/no-dynamic-require": "off",
-        "global-require": "off"
+        "global-require": "off",
+        "consistent-return": "off"
     }
 }

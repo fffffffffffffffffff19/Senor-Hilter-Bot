@@ -20,8 +20,13 @@ module.exports = (client) => {
         try {
             await interaction.client.commands.get(interaction.commandName).execute(interaction);
         } catch (error) {
-            if (interaction.replied || interaction.deferred) await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-            else await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            if (interaction.replied || interaction.deferred) {
+                console.log(error);
+                await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+            } else {
+                console.log(error);
+                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            }
         }
     });
 };

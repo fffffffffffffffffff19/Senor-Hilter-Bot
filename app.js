@@ -11,6 +11,8 @@ const client = new Client({
     ],
 });
 
+module.exports = client;
+
 require('dotenv').config();
 require('./src/handlers/events')(client);
 require('./src/handlers/commands')(client);
