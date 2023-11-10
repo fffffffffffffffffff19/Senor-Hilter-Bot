@@ -3,19 +3,14 @@ const { distube } = require('../../handlers/distube');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('pause')
-        .setDescription('Pause current song'),
+        .setName('skip')
+        .setDescription('Skip current song.'),
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
-
         if (!queue) return interaction.reply({ content: 'Any song on queue.' });
+        if (!queue.songs[1]) return interaction.reply({ content: 'No have song to skip on queue.' });
 
-        if (queue.paused) {
-            queue.resume();
-            return interaction.reply({ content: 'This song is already paused' });
-        }
-
-        queue.pause();
-        await interaction.reply({ content: 'Paused the song.' });
+        await queue.skip();
+        await interaction.reply({ content: `Skipped! Now playing:\n${queue.songs[0].url}` });
     },
 };

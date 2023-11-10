@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { player } = require('../../handlers/player');
+const { distube } = require('../../handlers/distube');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ module.exports = {
 
         await interaction.reply(`Playing:\n${userRequest}`);
 
-        if (!userRequest.match(regex)) player.play(channel, userRequest, { member, textChannel: interaction.channel });
-        else player.play(channel, repleced, { member, textChannel: interaction.channel });
+        if (!userRequest.match(regex)) distube.play(channel, userRequest, { member, textChannel: interaction.channel });
+        else distube.play(channel, repleced, { member, textChannel: interaction.channel });
     },
 };

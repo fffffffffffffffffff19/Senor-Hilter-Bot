@@ -4,7 +4,8 @@
   "description": "A discord music bot (maybe)",
   "main": "app.js",
   "scripts": {
-    "start": "cls && nodemon start app.js"
+    "start": "cls && nodemon start app.js",
+    "registerSlash": "cls && node commandsRegister.js"
   },
   "author": "Schiavon_deverasfff",
   "license": "ISC",

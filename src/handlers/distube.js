@@ -3,7 +3,7 @@ const { SpotifyPlugin } = require('@distube/spotify');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
 const client = require('../../app');
 
-exports.player = new Distube(client, {
+exports.distube = new Distube(client, {
     emitNewSongOnly: false,
     leaveOnEmpty: true,
     leaveOnFinish: true,
