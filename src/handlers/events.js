@@ -1,4 +1,4 @@
-const fileExplorer = require('./fileExplorer');
+const { fileExplorer } = require('./tools/fileExplorer');
 
 module.exports = (client) => {
     for (const event of fileExplorer('events')) {

@@ -1,5 +1,5 @@
 const { Collection, Events } = require('discord.js');
-const fileExplorer = require('./fileExplorer');
+const { fileExplorer } = require('./tools/fileExplorer');
 
 module.exports = (client) => {
     client.commands = new Collection();
