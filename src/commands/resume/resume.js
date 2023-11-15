@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { distube } = require('../../handlers/distube');
+const distube = require('../../handlers/distube');
 
 module.exports = {
     data: new SlashCommandBuilder()

@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 exports.fileExplorer = (itemsExport) => {
-    const foldersPath = path.join(__dirname, `../${itemsExport}`);
+    const foldersPath = path.join(__dirname, `../../${itemsExport}`);
     const itemsFolders = fs.readdirSync(foldersPath);
     const items = [];
 
