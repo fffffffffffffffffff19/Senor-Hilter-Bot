@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { noQueue } = require('./config/response');
 const distube = require('../../handlers/distube');
 const client = require('../../../app');
 
@@ -9,15 +10,17 @@ module.exports = {
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
 
-        if (!queue) return interaction.reply({ content: 'Any song on queue.', ephemeral: true });
-        if (!queue.songs[1]) return interaction.reply({ content: 'No have song to skip on queue.', ephemeral: true });
+        if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
 
         await interaction.deferReply('1');
         await interaction.deleteReply();
 
-        client.skipManual = true;
-        await queue.skip();
-
-        queue.emit('skip', queue);
+        try {
+            await queue.skip();
+            client.skipManual = true;
+            queue.emit('skip', queue);
+        } catch (e) {
+            return interaction.reply({ content: noQueue, ephemeral: true });
+        }
     },
 };

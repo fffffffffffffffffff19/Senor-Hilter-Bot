@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const distube = require('../../handlers/distube');
+const { needVoiceChannel, linkNotSuported } = require('./config/response');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +17,7 @@ module.exports = {
         const regex = /\/intl-[a-z]{2}\//;
         const repleced = userRequest.replace(regex, '/');
 
-        if (!channel) return interaction.reply({ content: 'You need to join a voice channel.', ephemeral: true });
+        if (!channel) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
 
         if (!userRequest.match(regex)) {
             try {
@@ -26,7 +27,7 @@ module.exports = {
                 await distube.play(channel, userRequest, { member, textChannel: interaction.channel });
             } catch (e) {
                 console.log(e);
-                return interaction.reply({ content: 'This link is not suported to play', ephemeral: true });
+                return interaction.reply({ content: linkNotSuported, ephemeral: true });
             }
         } else {
             try {
@@ -36,7 +37,7 @@ module.exports = {
                 await distube.play(channel, repleced, { member, textChannel: interaction.channel });
             } catch (e) {
                 console.log(e);
-                return interaction.deferReply({ content: 'This link is not suported to play', ephemeral: true });
+                return interaction.deferReply({ content: linkNotSuported, ephemeral: true });
             }
         }
     },

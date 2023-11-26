@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { noQueue, notPaused, songResume } = require('./config/response');
 const distube = require('../../handlers/distube');
 
 module.exports = {
@@ -8,11 +9,10 @@ module.exports = {
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
 
-        if (!queue) return interaction.reply({ content: 'Any song on queue.' });
-
-        if (!queue.paused) return interaction.reply({ content: 'This song is not paused.' });
+        if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
+        if (!queue.paused) return interaction.reply({ content: notPaused, ephemeral: true });
 
         queue.resume();
-        await interaction.reply({ content: 'Resumed the song.' });
+        await interaction.reply({ content: songResume, ephemeral: true });
     },
 };
