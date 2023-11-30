@@ -5,7 +5,6 @@ const client = require('../../../app');
 
 module.exports = (distube) => {
     distube.on('playSong', async (queue, song) => {
-        console.log('aro');
         if (queue.voiceChannel.members.size === 1) {
             return queue.stop();
         }
@@ -23,7 +22,7 @@ module.exports = (distube) => {
             const createdWebhook = await WebhookManager.fetchWebhook(channel);
 
             await createdWebhook.send({ embeds: [playSong(song, client.autoplay, client.paused)], components: [buttons] }).then((msg) => {
-                client.addListenerlastWebhookMenssageId = msg.id;
+                client.lastWebhookMenssageId = msg.id;
             });
             return;
         }
