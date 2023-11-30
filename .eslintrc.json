@@ -10,7 +10,7 @@
     },
     "rules": {
         "indent": ["error", 4],
-        "max-len": ["error", 150],
+        "max-len": ["error", 300],
         "linebreak-style": "off",
         "no-param-reassign": "off",
         "no-restricted-syntax": "off",

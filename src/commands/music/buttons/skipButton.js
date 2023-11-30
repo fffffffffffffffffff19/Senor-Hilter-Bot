@@ -1,21 +1,19 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { noQueue } = require('./config/response');
-const distube = require('../../../distube');
-const client = require('../../../app');
+const { noQueue, needVoiceChannel } = require('../config/response');
+const distube = require('../../../../distube');
+const client = require('../../../../app');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('skip')
-        .setDescription('Skip current song.'),
+    id: 'skipButton',
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
+
         if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
+        if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
 
         try {
             await queue.skip();
 
-            await interaction.deferReply('1');
-            await interaction.deleteReply();
+            await interaction.deferUpdate();
 
             client.skipManual = true;
             queue.emit('skip', queue);

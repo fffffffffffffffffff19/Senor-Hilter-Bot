@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const distube = require('../../handlers/distube');
-const { noQueue, songPaused, hasPaused } = require('./config/response');
+const distube = require('../../../distube');
+const { noQueue, hasPaused } = require('./config/response');
+const client = require('../../../app');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +17,11 @@ module.exports = {
             return interaction.reply({ content: hasPaused, ephemeral: true });
         }
 
+        await interaction.deferReply('1');
+        await interaction.deleteReply();
+
         queue.pause();
-        await interaction.reply({ content: songPaused, ephemeral: true });
+        client.paused = true;
+        queue.emit('paused', queue);
     },
 };

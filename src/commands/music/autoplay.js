@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { anySong, autoplayEmbed } = require('./config/response');
-const distube = require('../../handlers/distube');
+const { anySong } = require('./config/response');
+const distube = require('../../../distube');
+const client = require('../../../app');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,6 +14,12 @@ module.exports = {
 
         const autoplay = queue.toggleAutoplay();
 
-        await interaction.reply({ embeds: [autoplayEmbed(autoplay)] });
+        if (autoplay) client.autoplay = true;
+        else client.autoplay = false;
+
+        await interaction.deferReply('1');
+        await interaction.deleteReply();
+
+        queue.emit('autoplay', queue);
     },
 };

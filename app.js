@@ -1,4 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
+const { FileExplorer } = require('./src/tools/fileExplorer');
+require('dotenv').config();
 
 const client = new Client({
     intents: [
@@ -13,8 +15,6 @@ const client = new Client({
 
 module.exports = client;
 
-require('dotenv').config();
-require('./src/handlers/events')(client);
-require('./src/handlers/commands')(client);
+FileExplorer.findHandlers().forEach((handler) => require(handler)(client));
 
 client.login(process.env.TOKEN);

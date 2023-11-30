@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const distube = require('../../handlers/distube');
+const distube = require('../../../distube');
 const { needVoiceChannel, linkNotSuported } = require('./config/response');
 
 module.exports = {
@@ -26,7 +26,6 @@ module.exports = {
 
                 await distube.play(channel, userRequest, { member, textChannel: interaction.channel });
             } catch (e) {
-                console.log(e);
                 return interaction.reply({ content: linkNotSuported, ephemeral: true });
             }
         } else {
@@ -36,7 +35,6 @@ module.exports = {
 
                 await distube.play(channel, repleced, { member, textChannel: interaction.channel });
             } catch (e) {
-                console.log(e);
                 return interaction.deferReply({ content: linkNotSuported, ephemeral: true });
             }
         }

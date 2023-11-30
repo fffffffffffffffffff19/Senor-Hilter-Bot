@@ -6,6 +6,6 @@ module.exports = {
         .setName('help')
         .setDescription('My command list'),
     async execute(interaction) {
-        await interaction.reply({ embeds: [helpEmbed] });
+        await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
     },
 };

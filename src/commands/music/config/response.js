@@ -2,9 +2,17 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     noQueueToSkip: 'No have song to skip on queue.',
+
     noQueue: 'Any song on queue.',
+
     notPaused: 'This song is not paused.',
-    songResume: 'Resumed the song.',
+
+    hasPaused: 'This song is already paused',
+
+    needVoiceChannel: 'You need to join a voice channel.',
+
+    linkNotSuported: 'This link is not suported to play',
+
     helpEmbed: new EmbedBuilder()
         .setTitle('__All my commands__')
         .addFields(
@@ -40,19 +48,29 @@ module.exports = {
             text: 'fffffffffffffffs',
         })
         .setTimestamp(),
-    autoplayEmbed: (autoplay) => new EmbedBuilder()
-        .setDescription(`Autoplay is ${autoplay ? 'On' : 'Off'}`)
-        .setColor(`${autoplay ? '#0aff00' : '#ff0000'}`)
-        .setTimestamp(new Date().getTime()),
-    stopEmbed: new EmbedBuilder()
-        .setDescription('Stopped current queue.')
-        .setColor('#ff0000')
-        .setTimestamp(new Date().getTime()),
-    queueList: (queue) => queue.songs
-        .map((song, position) => `${position === 0 ? 'Playing:' : `${position}.`} [${song.name}](${song.url})`)
-        .join('\n'),
-    hasPaused: 'This song is already paused',
-    songPaused: 'Paused the song.',
-    needVoiceChannel: 'You need to join a voice channel.',
-    linkNotSuported: 'This link is not suported to play',
+
+    playSong: (song, autoplay, paused) => new EmbedBuilder()
+        .setAuthor({
+            name: '⋮ Now Playing ·',
+            iconURL: song.user.avatarURL(),
+        })
+        .setDescription(`[${song.name}](${song.url})\n**Length: ${song.formattedDuration} Autoplay: ${autoplay ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'} Paused: ${paused ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'}**`)
+        .setImage('https://images-ext-2.discordapp.net/external/CF3Jn45RilI2fXH_0ZZOa6ZZ7OxzJyEXnpf5tFW6H6k/https/i.imgur.com/sscpYbT.jpg')
+        .setThumbnail(`${song.thumbnail}`)
+        .setColor('#F6CCDF')
+        .setFooter({
+            text: 'fffffffffffffffs',
+            iconURL: 'https://cdn3.emoji.gg/emojis/3551-music.gif',
+        })
+        .setTimestamp(),
+
+    addSong: (song) => new EmbedBuilder()
+        .setAuthor({
+            name: '| Song Added',
+            iconURL: song.user.avatarURL(),
+        })
+        .setDescription(`[${song.name}](${song.url})`)
+        .setThumbnail(`${song.thumbnail}`)
+        .setColor('#0080ff')
+        .setTimestamp(),
 };

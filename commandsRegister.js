@@ -1,12 +1,12 @@
 const { REST, Routes } = require('discord.js');
-const { fileExplorer } = require('./src/handlers/tools/fileExplorer');
+const { FileExplorer } = require('./src/tools/fileExplorer');
 require('dotenv').config();
 
 const { TOKEN, CLIENT_ID } = process.env;
 
 const commands = [];
 
-for (const command of fileExplorer('commands')) {
+for (const command of FileExplorer.findCommands()) {
     commands.push(command.data.toJSON());
 }
 
