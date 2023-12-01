@@ -1,4 +1,4 @@
-const { noQueue, needVoiceChannel } = require('../config/response');
+const { noQueue, needVoiceChannel, noQueueToSkip } = require('../config/response');
 const distube = require('../../../../distube');
 const client = require('../../../../app');
 
@@ -9,16 +9,11 @@ module.exports = {
 
         if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
         if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+        if (queue.songs.length === 1 && client.autoplay === false) return interaction.reply({ content: noQueueToSkip, ephemeral: true });
 
-        try {
-            await queue.skip();
+        client.skipManual = true;
 
-            await interaction.deferUpdate();
-
-            client.skipManual = true;
-            queue.emit('skip', queue);
-        } catch (e) {
-            return interaction.reply({ content: noQueue, ephemeral: true });
-        }
+        await interaction.deferUpdate();
+        await queue.skip();
     },
 };

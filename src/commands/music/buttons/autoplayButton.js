@@ -15,8 +15,7 @@ module.exports = {
         if (autoplay) client.autoplay = true;
         else client.autoplay = false;
 
-        await interaction.deferUpdate();
-
         queue.emit('autoplay', queue);
+        await interaction.deferUpdate();
     },
 };
