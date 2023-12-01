@@ -5,7 +5,7 @@ const { DeezerPlugin } = require('@distube/deezer');
 const { FileExplorer } = require('./src/tools/fileExplorer');
 const client = require('./app');
 
-client.skipManual = false;
+client.autoplay = false;
 
 const distube = new Distube(client, {
     emitNewSongOnly: false,
@@ -16,12 +16,6 @@ const distube = new Distube(client, {
     searchSongs: 0,
     plugins: [new SpotifyPlugin(), new SoundCloudPlugin(), new DeezerPlugin()],
 });
-
-/* distube.on('addSong', (queue, song) => {
-    if (!queue.songs[1]) return;
-
-    queue.textChannel.send({ embeds: [addSong(song)] });
-}); */
 
 FileExplorer.findDistubeEvents().forEach((event) => require(event)(distube));
 

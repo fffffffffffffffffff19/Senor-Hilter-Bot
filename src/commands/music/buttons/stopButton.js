@@ -9,8 +9,7 @@ module.exports = {
         if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
         if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
 
-        await interaction.deferUpdate();
-
         await queue.stop();
+        await interaction.deferUpdate();
     },
 };
