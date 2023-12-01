@@ -7,7 +7,8 @@ module.exports = (distube) => {
         const webhook = await WebhookManager.fetchWebhook(channel);
         const lastMsg = await webhook.fetchMessage(client.lastWebhookMenssageId);
 
-        await webhook.deleteMessage(lastMsg);
         client.lastWebhookMenssageId = null;
+
+        await webhook.deleteMessage(lastMsg).catch((e) => e);
     });
 };
