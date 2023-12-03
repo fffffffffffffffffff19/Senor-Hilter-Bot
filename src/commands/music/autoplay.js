@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { anySong } = require('./config/response');
+const { noQueue, needVoiceChannel } = require('./config/response');
 const distube = require('../../../distube');
 const client = require('../../../app');
 
@@ -10,7 +10,8 @@ module.exports = {
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
 
-        if (!queue) return interaction.reply({ content: anySong, ephemeral: true });
+        if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+        if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
 
         const autoplay = queue.toggleAutoplay();
 

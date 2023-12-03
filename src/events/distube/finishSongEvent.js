@@ -8,15 +8,40 @@ module.exports = (distube) => {
         const webhook = await WebhookManager.fetchWebhook(channel);
         const lastMsg = await webhook.fetchMessage(client.lastWebhookMenssageId);
 
+        if (client.stop) {
+            await queue.textChannel.send({ embeds: [finishedSong(song)] });
+
+            try {
+                await webhook.deleteMessage(lastMsg);
+            } catch (e) {
+                console.log(e);
+            }
+
+            client.lastWebhookMenssageId = null;
+            return;
+        }
+
         if (client.skipManual) {
             client.skipManual = false;
 
             await queue.textChannel.send({ embeds: [skipedSong(song)] });
-            await webhook.deleteMessage(lastMsg);
+
+            try {
+                await webhook.deleteMessage(lastMsg);
+            } catch (e) {
+                console.log(e);
+            }
+
             client.lastWebhookMenssageId = null;
         } else {
             await queue.textChannel.send({ embeds: [finishedSong(song)] });
-            await webhook.deleteMessage(lastMsg);
+
+            try {
+                await webhook.deleteMessage(lastMsg);
+            } catch (e) {
+                console.log(e);
+            }
+
             client.lastWebhookMenssageId = null;
         }
     });

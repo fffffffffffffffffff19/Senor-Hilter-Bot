@@ -11,6 +11,7 @@
     "rules": {
         "indent": ["error", 4],
         "max-len": ["error", 300],
+        "object-curly-newline": "off",
         "linebreak-style": "off",
         "no-param-reassign": "off",
         "no-restricted-syntax": "off",

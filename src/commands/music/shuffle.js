@@ -1,24 +1,19 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { noQueue, notPaused, needVoiceChannel } = require('./config/response');
+const { shuffled, noQueue, needVoiceChannel } = require('./config/response');
 const distube = require('../../../distube');
-const client = require('../../../app');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('resume')
-        .setDescription('Resume the current paused song'),
+        .setName('shuffle')
+        .setDescription('Shuffle current queue.'),
     async execute(interaction) {
         const queue = distube.getQueue(interaction);
 
         if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
         if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
-        if (!queue.paused) return interaction.reply({ content: notPaused, ephemeral: true });
 
-        await interaction.deferReply('1');
-        await interaction.deleteReply();
+        await interaction.reply({ content: shuffled, ephemeral: true });
 
-        queue.resume();
-        client.paused = false;
-        queue.emit('paused', queue);
+        await queue.shuffle();
     },
 };

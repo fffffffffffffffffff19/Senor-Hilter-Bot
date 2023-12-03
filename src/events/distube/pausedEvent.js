@@ -9,6 +9,10 @@ module.exports = (distube) => {
         const webhook = await WebhookManager.fetchWebhook(channel);
         const lastMsg = await webhook.fetchMessage(client.lastWebhookMenssageId);
 
-        await webhook.editMessage(lastMsg, { embeds: [playSong(queue.songs[0], client.autoplay, client.paused)], components: [buttons] });
+        try {
+            await webhook.editMessage(lastMsg, { embeds: [playSong(queue.songs[0], client.autoplay, client.paused)], components: [buttons] });
+        } catch (e) {
+            console.log(e);
+        }
     });
 };

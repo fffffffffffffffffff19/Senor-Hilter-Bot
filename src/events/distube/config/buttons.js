@@ -20,12 +20,12 @@ const autoplayButton = new ButtonBuilder()
     .setEmoji('<:autoplay:1179078030342242315>')
     .setStyle(ButtonStyle.Secondary);
 
-const helpButton = new ButtonBuilder()
-    .setCustomId('helpButton')
-    .setEmoji('<:help:1179078028911976590>')
+const shuffleButton = new ButtonBuilder()
+    .setCustomId('shuffleButton')
+    .setEmoji('<:shuffle:1180889890469195846>')
     .setStyle(ButtonStyle.Secondary);
 
 const buttons = new ActionRowBuilder()
-    .addComponents(stopButton, pausedButton, skipButton, autoplayButton, helpButton);
+    .addComponents(stopButton, pausedButton, skipButton, autoplayButton, shuffleButton);
 
 module.exports = { buttons };

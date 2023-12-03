@@ -13,6 +13,10 @@ module.exports = {
 
     linkNotSuported: 'This link is not suported to play',
 
+    needResume: 'Need to resume the song to skip',
+
+    shuffled: 'Shuffled the queue.',
+
     helpEmbed: new EmbedBuilder()
         .setTitle('__All my commands__')
         .addFields(

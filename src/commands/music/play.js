@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const distube = require('../../../distube');
 const { needVoiceChannel, linkNotSuported } = require('./config/response');
+const distube = require('../../../distube');
+const client = require('../../../app');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,13 +12,16 @@ module.exports = {
             .setDescription('Send the music link or name to play.')
             .setRequired(true)),
     async execute(interaction) {
-        const userRequest = await interaction.options.getString('music');
+        if (client.stop) client.stop = false;
+
         const member = interaction.guild.members.cache.get(interaction.member.id);
         const { channel } = member.voice;
-        const regex = /\/intl-[a-z]{2}\//;
-        const repleced = userRequest.replace(regex, '/');
 
         if (!channel) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+
+        const userRequest = await interaction.options.getString('music');
+        const regex = /\/intl-[a-z]{2}\//;
+        const repleced = userRequest.replace(regex, '/');
 
         if (!userRequest.match(regex)) {
             try {
