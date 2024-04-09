@@ -1,7 +1,7 @@
+const client = require('../../../app');
 const { WebhookManager } = require('../../commands/music/config/webhookManager');
 const { addPlaylist } = require('../../commands/music/config/response');
 const { buttons } = require('./config/buttons');
-const client = require('../../../app');
 
 module.exports = (distube) => {
     distube.on('addList', async (queue, playlist) => {

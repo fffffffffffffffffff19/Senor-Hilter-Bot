@@ -5,8 +5,8 @@ const client = require('../../../app');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('play')
-        .setDescription('Add and Play musics')
+        .setName('playskip')
+        .setDescription('Add a song and Skip to it')
         .addStringOption((option) => option
             .setName('music')
             .setDescription('Send the music link or name to play.')
@@ -28,7 +28,7 @@ module.exports = {
                 await interaction.deferReply('1');
                 await interaction.deleteReply();
 
-                await distube.play(channel, userRequest, { member, textChannel: interaction.channel });
+                await distube.play(channel, userRequest, { member, textChannel: interaction.channel, skip: true });
             } catch (e) {
                 return interaction.reply({ content: linkNotSuported, ephemeral: true });
             }
@@ -37,7 +37,7 @@ module.exports = {
                 await interaction.deferReply('1');
                 await interaction.deleteReply();
 
-                await distube.play(channel, repleced, { member, textChannel: interaction.channel });
+                await distube.play(channel, repleced, { member, textChannel: interaction.channel, skip: true });
             } catch (e) {
                 return interaction.deferReply({ content: linkNotSuported, ephemeral: true });
             }
