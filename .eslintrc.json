@@ -17,6 +17,10 @@
         "no-restricted-syntax": "off",
         "import/no-dynamic-require": "off",
         "global-require": "off",
-        "consistent-return": "off"
+        "consistent-return": "off",
+        "new-cap": "off",
+        "no-shadow": "off",
+        "no-continue": "off",
+        "no-return-assign": "off"
     }
 }

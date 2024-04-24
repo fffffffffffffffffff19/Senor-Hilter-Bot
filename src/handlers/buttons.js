@@ -1,30 +1,28 @@
 const { Collection, Events } = require('discord.js');
-const { FileExplorer } = require('../tools/fileExplorer');
+const { findButtons } = require('../tools/fileExplorer');
+const { createLogger } = require('../tools/logger');
 
 module.exports = (client) => {
     client.buttons = new Collection();
 
-    for (const button of FileExplorer.findButtons()) {
+    for (const button of findButtons()) {
         if ('id' in button && 'execute' in button) client.buttons.set(button.id, button);
-        else console.log('[Warning] One or more commands not contain "id" or "execute".');
+        else createLogger.warn('One or more commands not contain "id" or "execute".');
     }
 
     client.on(Events.InteractionCreate, async (interaction) => {
         if (!interaction.isButton()) return;
 
-        if (!interaction.client.buttons.get(interaction.customId)) {
-            console.log(`Error for run "${interaction.customId}"`);
-            return;
-        }
+        if (!interaction.client.buttons.get(interaction.customId)) return createLogger.error(`Error for run "${interaction.customId}"`);
 
         try {
             await interaction.client.buttons.get(interaction.customId).execute(interaction);
-        } catch (error) {
+        } catch (erro) {
             if (interaction.replied || interaction.deferred) {
-                console.log(error);
+                createLogger.error(__filename, erro);
                 await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
             } else {
-                console.log(error);
+                createLogger.error(__filename, erro);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
         }

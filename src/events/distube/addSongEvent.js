@@ -1,24 +1,31 @@
-const client = require('../../../app');
-const { WebhookManager } = require('../../commands/music/config/webhookManager');
+const { fetchWebhook } = require('../../class/webhookManager');
 const { addSong } = require('../../commands/music/config/response');
 const { buttons } = require('./config/buttons');
+const { guildMapGet } = require('../../class/guildTemplate');
+const { createLogger, fileName } = require('../../tools/logger');
 
 module.exports = (distube) => {
     distube.on('addSong', async (queue, song) => {
-        const channel = queue.textChannel;
-        const webhook = await WebhookManager.fetchWebhook(channel);
-
         try {
-            const lastMsg = await webhook.fetchMessage(client.lastWebhookMenssageId);
-            const lastEmbed = lastMsg.embeds[0];
+            const channel = queue.textChannel;
+            const guildConfig = guildMapGet(queue.textChannel.guild.id);
+            const webhook = await fetchWebhook(channel);
 
-            await queue.textChannel.send({ embeds: [addSong(song)] });
-            await webhook.deleteMessage(lastMsg);
-            await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => {
-                client.lastWebhookMenssageId = msg.id;
-            });
-        } catch (e) {
-            await queue.textChannel.send({ embeds: [addSong(song)] });
+            try {
+                const lastMsg = await webhook.fetchMessage(guildConfig.lastWebhookMenssageId);
+                const lastEmbed = lastMsg.embeds[0];
+
+                await queue.textChannel.send({ embeds: [addSong(song)] });
+                await webhook.deleteMessage(lastMsg);
+                await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => {
+                    guildConfig.lastWebhookMenssageId = msg.id;
+                });
+            } catch (warn) {
+                await queue.textChannel.send({ embeds: [addSong(song)] });
+                createLogger.warn(fileName, warn);
+            }
+        } catch (erro) {
+            createLogger.error(fileName, erro);
         }
     });
 };

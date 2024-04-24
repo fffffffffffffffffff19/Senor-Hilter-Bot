@@ -26,6 +26,11 @@ module.exports = {
                 inline: true,
             },
             {
+                name: '`/playskip`',
+                value: '_Add a song and skip to it._',
+                inline: true,
+            },
+            {
                 name: '`/skip`',
                 value: '_Skip to the next song._',
                 inline: true,

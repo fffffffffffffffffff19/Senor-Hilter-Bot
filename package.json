@@ -4,9 +4,9 @@
   "description": "A discord music bot (maybe)",
   "main": "app.js",
   "scripts": {
-    "start": "cls && nodemon start app.js",
-    "registerSlash": "cls && node commandsRegister.js",
-    "pm2": "pm2 start app.js"
+    "start": "cls && nodemon --quiet start ./src/app.js",
+    "registerSlash": "cls && node ./src/tools/commandsRegister.js",
+    "pm2": "pm2 start ./src/app.js"
   },
   "author": "Schiavon_deverasfff",
   "license": "ISC",
@@ -21,7 +21,9 @@
     "distube": "^4.1.0",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.13"
+    "libsodium-wrappers": "^0.7.13",
+    "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^8.53.0",

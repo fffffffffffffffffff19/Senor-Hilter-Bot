@@ -1,28 +1,33 @@
 const { SlashCommandBuilder } = require('discord.js');
-const distube = require('../../../distube');
+const { distube } = require('../../main');
 const { hasPaused, noQueue, needVoiceChannel } = require('./config/response');
-const client = require('../../../app');
+const { guildMapGet } = require('../../class/guildTemplate');
+const { createLogger, fileName } = require('../../tools/logger');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('pause')
         .setDescription('Pause current song'),
     async execute(interaction) {
-        const queue = distube.getQueue(interaction);
+        try {
+            const guildConfig = guildMapGet(interaction.guild.id);
+            const queue = distube.getQueue(interaction);
 
-        if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-        if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
+            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
 
-        if (queue.paused) {
-            queue.resume();
-            return interaction.reply({ content: hasPaused, ephemeral: true });
-        }
+            if (queue.paused) {
+                queue.resume();
+                return interaction.reply({ content: hasPaused, ephemeral: true });
+            }
 
-        await interaction.deferReply('1');
-        await interaction.deleteReply();
+            await interaction.deferReply('1');
+            await interaction.deleteReply();
 
-        queue.pause();
-        client.paused = true;
-        queue.emit('paused', queue);
+            guildConfig.paused = true;
+
+            queue.pause();
+            queue.emit('paused', queue);
+        } catch (erro) { createLogger.error(fileName, erro); }
     },
 };

@@ -1,48 +1,37 @@
-const { WebhookManager } = require('../../commands/music/config/webhookManager');
+const { fetchWebhook } = require('../../class/webhookManager');
 const { skipedSong, finishedSong } = require('../../commands/music/config/response');
-const client = require('../../../app');
+const { guildMapGet, guildMapDelete } = require('../../class/guildTemplate');
+const { createLogger, fileName } = require('../../tools/logger');
 
 module.exports = (distube) => {
     distube.on('finishSong', async (queue, song) => {
-        const channel = queue.textChannel;
-        const webhook = await WebhookManager.fetchWebhook(channel);
-        const lastMsg = await webhook.fetchMessage(client.lastWebhookMenssageId);
+        try {
+            const channel = queue.textChannel;
+            const guildConfig = guildMapGet(channel.guild.id);
+            const webhook = await fetchWebhook(channel);
+            const lastMsg = await webhook.fetchMessage(guildConfig.lastWebhookMenssageId);
 
-        if (client.stop) {
-            await queue.textChannel.send({ embeds: [finishedSong(song)] });
+            if (guildConfig.stop) {
+                guildMapDelete(channel.guild.id);
 
-            try {
-                await webhook.deleteMessage(lastMsg);
-            } catch (e) {
-                console.log(e);
+                await queue.textChannel.send({ embeds: [finishedSong(song)] });
+                return webhook.deleteMessage(lastMsg);
             }
 
-            client.lastWebhookMenssageId = null;
-            return;
-        }
+            if (guildConfig.skipManual) {
+                guildConfig.skipManual = false;
+                guildConfig.lastWebhookMenssageId = null;
 
-        if (client.skipManual) {
-            client.skipManual = false;
-
-            await queue.textChannel.send({ embeds: [skipedSong(song)] });
-
-            try {
+                await queue.textChannel.send({ embeds: [skipedSong(song)] });
                 await webhook.deleteMessage(lastMsg);
-            } catch (e) {
-                console.log(e);
-            }
+            } else {
+                guildConfig.lastWebhookMenssageId = null;
 
-            client.lastWebhookMenssageId = null;
-        } else {
-            await queue.textChannel.send({ embeds: [finishedSong(song)] });
-
-            try {
+                await queue.textChannel.send({ embeds: [finishedSong(song)] });
                 await webhook.deleteMessage(lastMsg);
-            } catch (e) {
-                console.log(e);
             }
-
-            client.lastWebhookMenssageId = null;
+        } catch (erro) {
+            createLogger.error(fileName, erro);
         }
     });
 };

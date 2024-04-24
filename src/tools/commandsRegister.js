@@ -1,12 +1,13 @@
-const { REST, Routes } = require('discord.js');
-const { FileExplorer } = require('./src/tools/fileExplorer');
 require('dotenv').config();
+const { REST, Routes } = require('discord.js');
+const { findCommands } = require('./fileExplorer');
+const { createLogger, fileName } = require('./logger');
 
 const { TOKEN, CLIENT_ID } = process.env;
 
 const commands = [];
 
-for (const command of FileExplorer.findCommands()) {
+for (const command of findCommands()) {
     commands.push(command.data.toJSON());
 }
 
@@ -20,6 +21,6 @@ const rest = new REST().setToken(TOKEN);
 
         return console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
-        console.error(error);
+        createLogger.error(fileName, error);
     }
 })();

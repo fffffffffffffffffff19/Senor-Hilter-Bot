@@ -1,7 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { needVoiceChannel, linkNotSuported } = require('./config/response');
-const distube = require('../../../distube');
-const client = require('../../../app');
+const { addSong } = require('../../class/playClass');
+const { createLogger, fileName } = require('../../tools/logger');
+const { guildMapFetch, guildMapCreate, guildMapGet } = require('../../class/guildTemplate');
+const { needVoiceChannel } = require('./config/response');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,35 +13,21 @@ module.exports = {
             .setDescription('Send the music link or name to play.')
             .setRequired(true)),
     async execute(interaction) {
-        if (client.stop) client.stop = false;
+        try {
+            const member = interaction.guild.members.cache.get(interaction.member.id);
+            const userChannel = member.voice.channel;
 
-        const member = interaction.guild.members.cache.get(interaction.member.id);
-        const { channel } = member.voice;
+            if (!userChannel) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
 
-        if (!channel) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+            if (!guildMapFetch(interaction.guild.id)) guildMapCreate(interaction.guild.id);
 
-        const userRequest = await interaction.options.getString('music');
-        const regex = /\/intl-[a-z]{2}\//;
-        const repleced = userRequest.replace(regex, '/');
+            const guildConfig = guildMapGet(interaction.guild.id);
 
-        if (!userRequest.match(regex)) {
-            try {
-                await interaction.deferReply('1');
-                await interaction.deleteReply();
+            if (guildConfig.stop) guildConfig.stop = false;
 
-                await distube.play(channel, userRequest, { member, textChannel: interaction.channel });
-            } catch (e) {
-                return interaction.reply({ content: linkNotSuported, ephemeral: true });
-            }
-        } else {
-            try {
-                await interaction.deferReply('1');
-                await interaction.deleteReply();
+            const userRequest = await interaction.options.getString('music');
 
-                await distube.play(channel, repleced, { member, textChannel: interaction.channel });
-            } catch (e) {
-                return interaction.deferReply({ content: linkNotSuported, ephemeral: true });
-            }
-        }
+            await addSong(interaction, userChannel, userRequest, member, false);
+        } catch (erro) { createLogger.error(fileName, erro); }
     },
 };

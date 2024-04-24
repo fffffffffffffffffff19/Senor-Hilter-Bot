@@ -1,21 +1,25 @@
 const { noQueue, needVoiceChannel } = require('../config/response');
-const distube = require('../../../../distube');
-const client = require('../../../../app');
+const { distube } = require('../../../main');
+const { guildMapGet } = require('../../../class/guildTemplate');
+const { createLogger, fileName } = require('../../../tools/logger');
 
 module.exports = {
     id: 'autoplayButton',
     async execute(interaction) {
-        const queue = distube.getQueue(interaction);
+        try {
+            const guildConfig = guildMapGet(interaction.guild.id);
+            const queue = distube.getQueue(interaction);
 
-        if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-        if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
+            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
+            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
 
-        const autoplay = queue.toggleAutoplay();
+            const autoplay = queue.toggleAutoplay();
 
-        if (autoplay) client.autoplay = true;
-        else client.autoplay = false;
+            if (autoplay) guildConfig.autoplay = true;
+            else guildConfig.autoplay = false;
 
-        queue.emit('autoplay', queue);
-        await interaction.deferUpdate();
+            queue.emit('autoplay', queue);
+            await interaction.deferUpdate();
+        } catch (erro) { createLogger.error(fileName, erro); }
     },
 };

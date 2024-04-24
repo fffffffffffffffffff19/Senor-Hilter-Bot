@@ -2,95 +2,97 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 class FileExplorer {
-    static findButtons() {
-        const foldersPath = path.join(__dirname, '../commands');
-        const itemsFolders = fs.readdirSync(foldersPath);
-        const items = [];
+    constructor() {
+        this.foldersPath = (folderPath) => path.join(__dirname, folderPath);
+        this.itemsFolders = (folderPath) => fs.readdirSync(this.foldersPath(folderPath));
 
-        for (const folder of itemsFolders) {
-            const itemsPath = path.join(foldersPath, folder);
-            const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.match('buttons'));
+        this.findButtons = () => {
+            const location = '../commands';
+            const items = [];
 
-            for (const item of itemsFile) {
-                const itemPath = path.join(itemsPath, item);
-                const buttons = fs.readdirSync(itemPath).filter((i) => i.endsWith('.js'));
+            for (const folder of this.itemsFolders(location)) {
+                const itemsPath = path.join(this.foldersPath(location), folder);
+                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.match('buttons'));
 
-                for (const button of buttons) {
-                    const files = path.join(itemPath, button);
-                    const allButtons = require(files);
+                for (const item of itemsFile) {
+                    const itemPath = path.join(itemsPath, item);
+                    const buttons = fs.readdirSync(itemPath).filter((i) => i.endsWith('.js'));
 
-                    items.push(allButtons);
+                    for (const button of buttons) {
+                        const files = path.join(itemPath, button);
+                        const allButtons = require(files);
+
+                        items.push(allButtons);
+                    }
                 }
             }
-        }
-        return items;
-    }
+            return items;
+        };
 
-    static findCommands() {
-        const foldersPath = path.join(__dirname, '../commands');
-        const itemsFolders = fs.readdirSync(foldersPath);
-        const items = [];
+        this.findCommands = () => {
+            const location = '../commands';
+            const items = [];
 
-        for (const folder of itemsFolders) {
-            const itemsPath = path.join(foldersPath, folder);
-            const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
+            for (const folder of this.itemsFolders(location)) {
+                const itemsPath = path.join(this.foldersPath(location), folder);
+                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
 
-            for (const item of itemsFile) {
-                const itemPath = path.join(itemsPath, item);
-                const importedItems = require(itemPath);
+                for (const item of itemsFile) {
+                    const itemPath = path.join(itemsPath, item);
+                    const importedItems = require(itemPath);
 
-                items.push(importedItems);
+                    items.push(importedItems);
+                }
             }
-        }
-        return items;
-    }
+            return items;
+        };
 
-    static findEvents() {
-        const foldersPath = path.join(__dirname, '../events');
-        const itemsFolders = fs.readdirSync(foldersPath);
-        const items = [];
+        this.findEvents = () => {
+            const location = '../events';
+            const items = [];
 
-        for (const folder of itemsFolders) {
-            const itemsPath = path.join(foldersPath, folder);
-            const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
+            for (const folder of this.itemsFolders(location)) {
+                const itemsPath = path.join(this.foldersPath(location), folder);
+                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
 
-            for (const item of itemsFile) {
-                const itemPath = path.join(itemsPath, item);
-                const importedItems = require(itemPath);
+                for (const item of itemsFile) {
+                    const itemPath = path.join(itemsPath, item);
+                    const importedItems = require(itemPath);
 
-                items.push(importedItems);
+                    items.push(importedItems);
+                }
             }
-        }
-        return items;
-    }
+            return items;
+        };
 
-    static findHandlers() {
-        const handlersPath = path.join(__dirname, '../handlers');
-        const handlers = fs.readdirSync(handlersPath).filter((filter) => filter.endsWith('.js'));
-        const items = [];
+        this.findHandlers = () => {
+            const location = '../handlers';
+            const items = [];
 
-        for (const handler of handlers) {
-            const handlerPath = path.join(handlersPath, handler);
+            for (const handler of this.itemsFolders(location)) {
+                const handlerPath = path.join(this.foldersPath(location), handler);
 
-            items.push(handlerPath);
-        }
+                items.push(handlerPath);
+            }
 
-        return items;
-    }
+            return items;
+        };
 
-    static findDistubeEvents() {
-        const eventsPath = path.join(__dirname, '../events/distube');
-        const events = fs.readdirSync(eventsPath).filter((filter) => filter.endsWith('.js'));
-        const items = [];
+        this.findDistubeEvents = () => {
+            const location = '../events/distube';
+            const items = [];
 
-        for (const event of events) {
-            const eventPath = path.join(eventsPath, event);
+            for (const event of this.itemsFolders(location)) {
+                const eventPath = path.join(this.foldersPath(location), event);
 
-            items.push(eventPath);
-        }
+                if (!eventPath.endsWith('.js')) continue;
 
-        return items;
+                items.push(eventPath);
+            }
+
+            return items;
+        };
     }
 }
 
-module.exports = { FileExplorer };
+module.exports = new FileExplorer();
