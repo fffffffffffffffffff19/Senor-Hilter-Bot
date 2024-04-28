@@ -2,6 +2,7 @@
 My first discord music (maybe) bot.
 
 # install and usage
+* `choco install ffmpeg` or `winget install "FFmpeg (Essentials Build)"` to install [ffmpeg](https://ffmpeg.org/download.html#build-windows)
 * `npm install` (to install all bot dependencies)
 * Create a `.env` in the same place as the `config.js`
   ```
