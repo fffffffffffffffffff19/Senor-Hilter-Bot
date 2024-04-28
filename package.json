@@ -18,7 +18,7 @@
     "@distube/spotify": "^1.5.1",
     "@distube/ytdl-core": "^4.13.3",
     "discord.js": "^14.12.1",
-    "distube": "^4.1.0",
+    "distube": "^4.2.2",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.13",

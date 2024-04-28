@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { addSong } = require('../../class/playClass');
 const { createLogger, fileName } = require('../../tools/logger');
 const { guildMapFetch, guildMapCreate, guildMapGet } = require('../../class/guildTemplate');
 const { needVoiceChannel } = require('./config/response');
+const addSong = require('./exports/playFunction');
 
 module.exports = {
     data: new SlashCommandBuilder()

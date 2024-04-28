@@ -12,7 +12,6 @@ class GuildTemplate {
             autoplay: null,
             skipManual: null,
         });
-        this.teste = () => client.guildConfig;
     }
 }
 
