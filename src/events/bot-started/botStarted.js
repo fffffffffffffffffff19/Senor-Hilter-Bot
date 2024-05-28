@@ -1,4 +1,4 @@
-const { Events, Routes, DataResolver } = require('discord.js');
+const { Events } = require('discord.js');
 const { clientConfig } = require('../../../config');
 const { createLogger, fileName } = require('../../tools/logger');
 
@@ -10,7 +10,7 @@ module.exports = {
             await client.user.setUsername(clientConfig.clientUsername);
             await client.user.setAvatar(clientConfig.avatarURL);
             await client.user.setPresence({ activities: [{ name: clientConfig.clientPresence }], status: clientConfig.clientStatus });
-            await client.rest.patch(Routes.user(), { body: { banner: await DataResolver.resolveImage(clientConfig.bannerURL) } });
+            await client.user.setBanner(clientConfig.bannerURL);
 
             const txt = `
    ┏┓          ┓┏•┓     
