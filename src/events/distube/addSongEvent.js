@@ -10,7 +10,9 @@ module.exports = (distube) => {
         try {
             const channel = queue.textChannel;
             const gTemplate = guildMapGet(channel.guild.id);
+
             const webhook = await fetchWebhook(channel);
+            let { lastWebhookMenssageId } = guildMapGet(channel.guild.id);
 
             if (gTemplate.lastWebhookMenssageId !== null) {
                 // let error = 'WHY .CATCH DONT STOP THE SCRIPT TTTT?????????????????????? BRUHHHHH';
@@ -28,6 +30,7 @@ module.exports = (distube) => {
 
                 await queue.textChannel.send({ embeds: [addSong(song)] });
                 await webhook.deleteMessage(lastMsg);
+
                 await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
             } else {
                 await queue.textChannel.send({ embeds: [addSong(song)] });

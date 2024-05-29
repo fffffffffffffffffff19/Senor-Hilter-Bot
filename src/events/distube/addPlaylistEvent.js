@@ -26,6 +26,7 @@ module.exports = (distube) => {
 
                 await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
                 await webhook.deleteMessage(lastMsg);
+
                 await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
             } else {
                 await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
