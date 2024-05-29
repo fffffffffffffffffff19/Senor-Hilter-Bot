@@ -8,21 +8,20 @@ module.exports = (distube) => {
     distube.on('addSong', async (queue, song) => {
         try {
             const channel = queue.textChannel;
-            const guildConfig = guildMapGet(queue.textChannel.guild.id);
             const webhook = await fetchWebhook(channel);
+            let { lastWebhookMenssageId } = guildMapGet(channel.guild.id);
 
-            try {
-                const lastMsg = await webhook.fetchMessage(guildConfig.lastWebhookMenssageId);
+            if (!lastWebhookMenssageId === null) {
+                const lastMsg = await webhook.fetchMessage(lastWebhookMenssageId);
                 const lastEmbed = lastMsg.embeds[0];
 
                 await queue.textChannel.send({ embeds: [addSong(song)] });
                 await webhook.deleteMessage(lastMsg);
                 await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => {
-                    guildConfig.lastWebhookMenssageId = msg.id;
+                    lastWebhookMenssageId = msg.id;
                 });
-            } catch (warn) {
+            } else {
                 await queue.textChannel.send({ embeds: [addSong(song)] });
-                createLogger.warn(fileName, warn);
             }
         } catch (erro) {
             createLogger.error(fileName, erro);

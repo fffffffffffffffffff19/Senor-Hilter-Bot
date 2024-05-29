@@ -19,7 +19,7 @@ class WebhookManager {
 
         this.fetchWebhook = async (channel) => {
             const webhooks = await channel.fetchWebhooks();
-            return webhooks.find((webhook) => webhook.owner.id === '1171060823356084294'); // bot id
+            return webhooks.find((webhook) => webhook.owner.id === client.user.id);
         };
     }
 }
