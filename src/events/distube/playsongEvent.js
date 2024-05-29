@@ -3,21 +3,20 @@ const { playSong } = require('../../commands/music/config/response');
 const { buttons } = require('./config/buttons');
 const { guildMapGet } = require('../../class/guildTemplate');
 const { createLogger, fileName } = require('../../tools/logger');
+let { PlaySong, Error } = require('./config/webhookFetchHandler');
 
 module.exports = (distube) => {
     distube.on('playSong', async (queue, song) => {
         try {
-            // eslint-disable-next-line prefer-const
-            let { paused, autoplay, skipManual, lastWebhookMenssageId, stop } = guildMapGet(queue.textChannel.guild.id);
+            const gTemplate = guildMapGet(queue.textChannel.guild.id);
 
             if (queue.voiceChannel.members.size === 1) {
-                // eslint-disable-next-line no-unused-vars
-                stop = true;
+                gTemplate.stop = true;
 
                 return queue.stop();
             }
 
-            if (skipManual === true) return skipManual = false;
+            if (gTemplate.skipManual === true) return gTemplate.skipManual = false;
 
             const channel = queue.textChannel;
             const webhook = await fetchWebhook(channel);
@@ -26,15 +25,21 @@ module.exports = (distube) => {
                 await createWebhook(channel);
                 const createdWebhook = await fetchWebhook(channel);
 
-                return createdWebhook.send({ embeds: [playSong(song, autoplay, paused)], components: [buttons] }).then((msg) => lastWebhookMenssageId = msg.id);
+                return createdWebhook.send({ embeds: [playSong(song, gTemplate.autoplay, gTemplate.paused)], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
             }
 
-            if (!lastWebhookMenssageId === null) {
-                const lastMsg = await webhook.fetchMessage(lastWebhookMenssageId);
+            if (gTemplate.lastWebhookMenssageId !== null) {
+                const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
+                    await PlaySong(webhook, song, gTemplate, buttons);
 
-                await webhook.editMessage(lastMsg, { embeds: [playSong(song, autoplay, paused)], components: [buttons] });
+                    Error = true;
+                });
+
+                if (Error) return Error = false;
+
+                await webhook.editMessage(lastMsg, { embeds: [playSong(song, gTemplate.autoplay, gTemplate.paused)], components: [buttons] });
             } else {
-                await webhook.send({ embeds: [playSong(song, autoplay, paused)], components: [buttons] }).then((msg) => lastWebhookMenssageId = msg.id);
+                await PlaySong(webhook, song, gTemplate, buttons);
             }
         } catch (erro) { createLogger.error(fileName, erro); }
     });

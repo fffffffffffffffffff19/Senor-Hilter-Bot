@@ -7,7 +7,7 @@ module.exports = {
     id: 'pausedButton',
     async execute(interaction) {
         try {
-            const guildConfig = guildMapGet(interaction.guild.id);
+            const gTemplate = guildMapGet(interaction.guild.id);
             const queue = distube.getQueue(interaction);
 
             if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
@@ -15,13 +15,13 @@ module.exports = {
 
             await interaction.deferUpdate();
 
-            if (guildConfig.paused) {
+            if (gTemplate.paused) {
                 queue.resume();
-                guildConfig.paused = false;
+                gTemplate.paused = false;
                 queue.emit('paused', queue);
             } else {
                 queue.pause();
-                guildConfig.paused = true;
+                gTemplate.paused = true;
                 queue.emit('paused', queue);
             }
         } catch (erro) { createLogger.error(fileName, erro); }

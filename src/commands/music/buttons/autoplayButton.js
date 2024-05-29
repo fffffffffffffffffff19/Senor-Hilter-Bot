@@ -7,7 +7,7 @@ module.exports = {
     id: 'autoplayButton',
     async execute(interaction) {
         try {
-            const guildConfig = guildMapGet(interaction.guild.id);
+            const gTemplate = guildMapGet(interaction.guild.id);
             const queue = distube.getQueue(interaction);
 
             if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
@@ -15,8 +15,8 @@ module.exports = {
 
             const autoplay = queue.toggleAutoplay();
 
-            if (autoplay) guildConfig.autoplay = true;
-            else guildConfig.autoplay = false;
+            if (autoplay) gTemplate.autoplay = true;
+            else gTemplate.autoplay = false;
 
             queue.emit('autoplay', queue);
             await interaction.deferUpdate();
