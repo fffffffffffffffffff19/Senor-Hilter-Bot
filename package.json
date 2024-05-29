@@ -9,7 +9,7 @@
     "pm2": "pm2 start ./src/app.js",
     "stop": "pm2 del app"
   },
-  "author": "Schiavon_deverasfff",
+  "author": "fffffffffffffffffffffffffffffffs",
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.9.0",

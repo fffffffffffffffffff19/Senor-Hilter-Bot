@@ -7,15 +7,17 @@ const { createLogger, fileName } = require('../../tools/logger');
 module.exports = (distube) => {
     distube.on('playSong', async (queue, song) => {
         try {
-            const guildConfig = guildMapGet(queue.textChannel.guild.id);
+            // eslint-disable-next-line prefer-const
+            let { paused, autoplay, skipManual, lastWebhookMenssageId, stop } = guildMapGet(queue.textChannel.guild.id);
 
             if (queue.voiceChannel.members.size === 1) {
-                guildConfig.stop = true;
+                // eslint-disable-next-line no-unused-vars
+                stop = true;
 
                 return queue.stop();
             }
 
-            if (guildConfig.skipManual === true) return guildConfig.skipManual = false;
+            if (skipManual === true) return skipManual = false;
 
             const channel = queue.textChannel;
             const webhook = await fetchWebhook(channel);
@@ -24,23 +26,16 @@ module.exports = (distube) => {
                 await createWebhook(channel);
                 const createdWebhook = await fetchWebhook(channel);
 
-                await createdWebhook.send({ embeds: [playSong(song, guildConfig.autoplay, guildConfig.paused)], components: [buttons] }).then((msg) => {
-                    guildConfig.lastWebhookMenssageId = msg.id;
-                });
-            } else {
-                try {
-                    const lastMsg = await webhook.fetchMessage(guildConfig.lastWebhookMenssageId);
-                    await webhook.editMessage(lastMsg, { embeds: [playSong(song, guildConfig.autoplay, guildConfig.paused)], components: [buttons] });
-                } catch (warn) {
-                    await webhook.send({ embeds: [playSong(song, guildConfig.autoplay, guildConfig.paused)], components: [buttons] }).then((msg) => {
-                        guildConfig.lastWebhookMenssageId = msg.id;
-                    });
-
-                    createLogger.warn(fileName, warn);
-                }
+                return createdWebhook.send({ embeds: [playSong(song, autoplay, paused)], components: [buttons] }).then((msg) => lastWebhookMenssageId = msg.id);
             }
-        } catch (erro) {
-            createLogger.error(fileName, erro);
-        }
+
+            if (!lastWebhookMenssageId === null) {
+                const lastMsg = await webhook.fetchMessage(lastWebhookMenssageId);
+
+                await webhook.editMessage(lastMsg, { embeds: [playSong(song, autoplay, paused)], components: [buttons] });
+            } else {
+                await webhook.send({ embeds: [playSong(song, autoplay, paused)], components: [buttons] }).then((msg) => lastWebhookMenssageId = msg.id);
+            }
+        } catch (erro) { createLogger.error(fileName, erro); }
     });
 };

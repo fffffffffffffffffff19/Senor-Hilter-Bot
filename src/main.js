@@ -5,7 +5,6 @@ const { SoundCloudPlugin } = require('@distube/soundcloud');
 const { DeezerPlugin } = require('@distube/deezer');
 const { leaveOnEmpty, leaveOnFinish, leaveOnStop } = require('../config').distubeConfig;
 
-// main class for bot client/distube
 class SenorHilter {
     constructor() {
         this.client = new Client({
