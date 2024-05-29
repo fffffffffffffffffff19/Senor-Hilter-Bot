@@ -10,12 +10,12 @@ module.exports = {
         .setDescription('Skip current song.'),
     async execute(interaction) {
         try {
-            const guildConfig = guildMapGet(interaction.guild.id);
+            const gTemplate = guildMapGet(interaction.guild.id);
             const queue = distube.getQueue(interaction);
 
             if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
             if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-            if (queue.songs.length === 1) return interaction.reply({ content: noQueueToSkip, ephemeral: true });
+            if (queue.songs.length === 1 && gTemplate.autoplay === false) return interaction.reply({ content: noQueueToSkip, ephemeral: true });
             if (queue.paused) return interaction.reply({ content: needResume, ephemeral: true });
 
             await queue.skip();
@@ -23,7 +23,7 @@ module.exports = {
             await interaction.deferReply('1');
             await interaction.deleteReply();
 
-            guildConfig.skipManual = true;
+            gTemplate.skipManual = true;
         } catch (erro) { createLogger.error(fileName, erro); }
     },
 };

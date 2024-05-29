@@ -21,9 +21,9 @@ module.exports = {
 
             if (!guildMapFetch(interaction.guild.id)) guildMapCreate(interaction.guild.id);
 
-            const guildConfig = guildMapGet(interaction.guild.id);
+            const gTemplate = guildMapGet(interaction.guild.id);
 
-            if (guildConfig.stop) guildConfig.stop = false;
+            if (gTemplate.stop) gTemplate.stop = false;
 
             const userRequest = await interaction.options.getString('music');
 

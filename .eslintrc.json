@@ -21,6 +21,8 @@
         "new-cap": "off",
         "no-shadow": "off",
         "no-continue": "off",
-        "no-return-assign": "off"
+        "no-return-assign": "off",
+        "prefer-const": "off",
+        "no-unused-vars": "off"
     }
 }

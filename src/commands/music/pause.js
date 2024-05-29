@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('Pause current song'),
     async execute(interaction) {
         try {
-            const guildConfig = guildMapGet(interaction.guild.id);
+            const gTemplate = guildMapGet(interaction.guild.id);
             const queue = distube.getQueue(interaction);
 
             if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
@@ -24,7 +24,7 @@ module.exports = {
             await interaction.deferReply('1');
             await interaction.deleteReply();
 
-            guildConfig.paused = true;
+            gTemplate.paused = true;
 
             queue.pause();
             queue.emit('paused', queue);
