@@ -5,7 +5,7 @@ const { createLogger } = require('../../tools/logger');
 const { guildMapGet } = require('../../class/guildTemplate');
 
 module.exports = (distube) => {
-    distube.on('autoplay', async (queue) => {
+    distube.on('addSong', async (queue) => {
         try {
             const channel = queue.textChannel;
             const webhook = await fetchWebhook(channel);
