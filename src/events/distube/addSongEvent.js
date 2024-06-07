@@ -12,7 +12,6 @@ module.exports = (distube) => {
             const gTemplate = guildMapGet(channel.guild.id);
 
             const webhook = await fetchWebhook(channel);
-            let { lastWebhookMenssageId } = guildMapGet(channel.guild.id);
 
             if (gTemplate.lastWebhookMenssageId !== null) {
                 // let error = 'WHY .CATCH DONT STOP THE SCRIPT TTTT?????????????????????? BRUHHHHH';
