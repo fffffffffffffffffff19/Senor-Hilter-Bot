@@ -25,32 +25,29 @@ module.exports = (distube) => {
                     gTemplate.lastWebhookMenssageId = null;
 
                     await queue.textChannel.send({ embeds: [skipedSong(song)] });
-                    await webhook.deleteMessage(lastMsg);
-                } else {
-                    gTemplate.lastWebhookMenssageId = null;
-
-                    await queue.textChannel.send({ embeds: [finishedSong(song)] });
-                    await webhook.deleteMessage(lastMsg);
+                    return webhook.deleteMessage(lastMsg);
                 }
+
+                gTemplate.lastWebhookMenssageId = null;
+
+                await queue.textChannel.send({ embeds: [finishedSong(song)] });
+                await webhook.deleteMessage(lastMsg);
             };
 
-            if (gTemplate.lastWebhookMenssageId !== null) {
-                const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
-                    Error = true;
+            if (gTemplate.lastWebhookMenssageId === null) return PlaySong(webhook, song, gTemplate, buttons);
 
-                    await PlaySong(webhook, song, gTemplate, buttons);
+            const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
+                const lastMsgFromError = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId);
 
-                    const lastMsgFromError = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId);
-
-                    await finishEmbedHandler(lastMsgFromError);
-                });
-
-                if (Error) return Error = false;
-
-                await finishEmbedHandler(lastMsg);
-            } else {
                 await PlaySong(webhook, song, gTemplate, buttons);
-            }
+                await finishEmbedHandler(lastMsgFromError);
+
+                Error = true;
+            });
+
+            if (Error) return Error = false;
+
+            await finishEmbedHandler(lastMsg);
         } catch (erro) { createLogger.error(fileName, erro); }
     });
 };

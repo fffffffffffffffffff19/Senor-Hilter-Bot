@@ -3,6 +3,7 @@ const { playSong } = require('../../commands/music/config/response');
 const { buttons } = require('./config/buttons');
 const { guildMapGet } = require('../../class/guildTemplate');
 const { createLogger, fileName } = require('../../tools/logger');
+const { editEmbed } = require('./config/embedResolver');
 let { PlaySong, Error } = require('./config/webhookFetchHandler');
 
 module.exports = (distube) => {
@@ -28,19 +29,7 @@ module.exports = (distube) => {
                 return createdWebhook.send({ embeds: [playSong(song, gTemplate.autoplay, gTemplate.paused)], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
             }
 
-            if (gTemplate.lastWebhookMenssageId !== null) {
-                const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
-                    await PlaySong(webhook, song, gTemplate, buttons);
-
-                    Error = true;
-                });
-
-                if (Error) return Error = false;
-
-                await webhook.editMessage(lastMsg, { embeds: [playSong(song, gTemplate.autoplay, gTemplate.paused)], components: [buttons] });
-            } else {
-                await PlaySong(webhook, song, gTemplate, buttons);
-            }
+            await editEmbed(gTemplate, PlaySong, playSong, webhook, song, buttons, Error);
         } catch (erro) { createLogger.error(fileName, erro); }
     });
 };
