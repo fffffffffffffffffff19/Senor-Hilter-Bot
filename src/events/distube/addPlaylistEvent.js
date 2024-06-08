@@ -12,25 +12,23 @@ module.exports = (distube) => {
             const webhook = await fetchWebhook(channel);
             const gTemplate = guildMapGet(channel.guild.id);
 
-            if (gTemplate.lastWebhookMenssageId !== null) {
-                const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
-                    await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
-                    await AddPlaylist(webhook, queue.songs[0], gTemplate, buttons);
+            if (gTemplate.lastWebhookMenssageId === null) return queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
 
-                    Error = true;
-                });
-
-                if (Error) return Error = false;
-
-                const lastEmbed = lastMsg.embeds[0];
-
+            const lastMsg = await webhook.fetchMessage(gTemplate.lastWebhookMenssageId).catch(async () => {
                 await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
-                await webhook.deleteMessage(lastMsg);
+                await AddPlaylist(webhook, queue.songs[0], gTemplate, buttons);
 
-                await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
-            } else {
-                await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
-            }
+                Error = true;
+            });
+
+            if (Error) return Error = false;
+
+            const lastEmbed = lastMsg.embeds[0];
+
+            await queue.textChannel.send({ embeds: [addPlaylist(playlist)] });
+            await webhook.deleteMessage(lastMsg);
+
+            await webhook.send({ embeds: [lastEmbed], components: [buttons] }).then((msg) => gTemplate.lastWebhookMenssageId = msg.id);
         } catch (erro) { createLogger.error(fileName, erro); }
     });
 };

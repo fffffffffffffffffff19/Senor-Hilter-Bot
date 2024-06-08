@@ -8,8 +8,8 @@ module.exports = {
     async execute(client) {
         try {
             await client.user.setUsername(clientConfig.clientUsername);
-            await client.user.setAvatar(clientConfig.avatarURL);
             await client.user.setPresence({ activities: [{ name: clientConfig.clientPresence }], status: clientConfig.clientStatus });
+            await client.user.setAvatar(clientConfig.avatarURL);
             await client.user.setBanner(clientConfig.bannerURL);
 
             const txt = `
