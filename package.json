@@ -6,9 +6,9 @@
     "scripts": {
         "start": "node ./src/app.js",
         "dev": "nodemon start ./src/app.js",
-        "registerSlash": "node ./src/commandRegister.js",
         "pm2": "pm2 start ./src/app.js && pm2 monit",
-        "stop": "pm2 del app"
+        "stop": "pm2 del app",
+        "registerSlash": "node ./src/commandRegister.js"
     },
     "author": "fffffffffffffffffffffffffffffffs",
     "license": "ISC",
