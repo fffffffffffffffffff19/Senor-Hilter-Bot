@@ -1,4 +1,4 @@
-const { findEvents } = require('../tools/fileExplorer');
+const { findEvents } = require('../class/fileExplorer');
 
 module.exports = (client) => {
     for (const event of findEvents()) {

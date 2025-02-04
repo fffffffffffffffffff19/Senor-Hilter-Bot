@@ -1,19 +1,16 @@
-const { fetchWebhook } = require('../../class/webhookManager');
-const { playSong } = require('../../commands/music/config/response');
-const { buttons } = require('./config/buttons');
-const { createLogger } = require('../../tools/logger');
-const { guildMapGet } = require('../../class/guildTemplate');
-const { editEmbed } = require('./config/embedResolver');
-let { PlaySong, Error } = require('./config/webhookFetchHandler');
+const { guildGet } = require('../../class/guildTemplate');
+const playerEmbed = require('../../assets/embeds/playerEmbed');
+const playerErrorHandler = require('../../func/playerErrorHandler');
 
 module.exports = (distube) => {
     distube.on('paused', async (queue) => {
-        try {
-            const channel = queue.textChannel;
-            const webhook = await fetchWebhook(channel);
-            const gTemplate = guildMapGet(channel.guild.id);
+        const guildId = queue.voiceChannel.guild.id;
+        const guildConfig = await guildGet(guildId);
+        const playerChannel = await queue.voiceChannel.guild.channels.cache.get(guildConfig.textChannel);
+        const { webhook, playerMessage } = await playerErrorHandler(guildConfig, playerChannel, guildId);
 
-            await editEmbed(gTemplate, PlaySong, playSong, webhook, queue.songs[0], buttons, Error);
-        } catch (erro) { createLogger.error(__filename, erro); }
+        await webhook.editMessage(playerMessage, {
+            embeds: [playerEmbed({ autoplay: guildConfig.autoplay, paused: guildConfig.paused })],
+        });
     });
 };

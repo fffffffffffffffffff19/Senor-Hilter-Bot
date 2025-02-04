@@ -1,22 +1,17 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { shuffled, noQueue, needVoiceChannel } = require('./config/response');
-const { createLogger, fileName } = require('../../tools/logger');
-const { distube } = require('../../main');
+const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('shuffle')
-        .setDescription('Shuffle current queue.'),
+    data: new SlashCommandBuilder().setName('shuffle').setDescription('Shuffle current queue.'),
     async execute(interaction) {
-        try {
-            const queue = distube.getQueue(interaction);
-
-            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
-
-            await interaction.reply({ content: shuffled, ephemeral: true });
-
-            await queue.shuffle();
-        } catch (erro) { createLogger.error(fileName, erro); }
+        // getting guildId, player queue and any error
+        const { queue, error } = await commandErrorHandler(interaction);
+        // returning if have any error
+        if (error) return;
+        // shuffling the current queue
+        queue.shuffle();
+        // replying interaction and deleting then
+        await interaction.deferReply();
+        await interaction.deleteReply();
     },
 };

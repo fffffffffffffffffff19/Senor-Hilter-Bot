@@ -7,25 +7,19 @@ class FileExplorer {
         this.itemsFolders = (folderPath) => fs.readdirSync(this.foldersPath(folderPath));
 
         this.findButtons = () => {
-            const location = '../commands';
+            const location = path.resolve('src', 'buttons', 'scripts');
             const items = [];
 
-            for (const folder of this.itemsFolders(location)) {
-                const itemsPath = path.join(this.foldersPath(location), folder);
-                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.match('buttons'));
+            const itemsPath = path.join(location);
+            const buttons = fs.readdirSync(itemsPath).filter((i) => i.endsWith('.js'));
 
-                for (const item of itemsFile) {
-                    const itemPath = path.join(itemsPath, item);
-                    const buttons = fs.readdirSync(itemPath).filter((i) => i.endsWith('.js'));
+            for (const button of buttons) {
+                const files = path.join(itemsPath, button);
+                const allButtons = require(files);
 
-                    for (const button of buttons) {
-                        const files = path.join(itemPath, button);
-                        const allButtons = require(files);
-
-                        items.push(allButtons);
-                    }
-                }
+                items.push(allButtons);
             }
+
             return items;
         };
 

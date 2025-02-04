@@ -1,30 +1,22 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { noQueue, needVoiceChannel } = require('./config/response');
-const { distube } = require('../../main');
-const { createLogger, fileName } = require('../../tools/logger');
-const { guildMapGet } = require('../../class/guildTemplate');
+const { guildUpdate } = require('../../class/guildTemplate');
+const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('autoplay')
-        .setDescription('Auto play songs with the same gender'),
+    data: new SlashCommandBuilder().setName('autoplay').setDescription('Auto play songs with the same gender'),
     async execute(interaction) {
-        try {
-            const gTemplate = guildMapGet(interaction.guild.id);
-            const queue = distube.getQueue(interaction);
-
-            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
-
-            const autoplay = queue.toggleAutoplay();
-
-            if (autoplay) gTemplate.autoplay = true;
-            else gTemplate.autoplay = false;
-
-            await interaction.deferReply('1');
-            await interaction.deleteReply();
-
-            queue.emit('autoplay', queue);
-        } catch (erro) { createLogger.error(fileName, erro); }
+        // getting guildId, player queue and any error
+        const { guildId, queue, error } = await commandErrorHandler(interaction);
+        // returning if have any error
+        if (error) return;
+        // toggle autoplay in queue
+        const autoplay = queue.toggleAutoplay();
+        // updating guild config on db
+        await guildUpdate({ guildId: guildId, autoplay: autoplay });
+        // emiting a new bot event
+        queue.emit('autoplay', queue);
+        // replying interaction and deleting then
+        await interaction.deferReply();
+        await interaction.deleteReply();
     },
 };
