@@ -8,9 +8,8 @@ module.exports = (distube) => {
         const guildConfig = await guildGet(guildId);
         const playerChannel = await queue.voiceChannel.guild.channels.cache.get(guildConfig.textChannel);
         const { webhook, playerMessage } = await playerErrorHandler(guildConfig, playerChannel, guildId);
-
         await webhook.editMessage(playerMessage, {
-            embeds: [playerEmbed({ autoplay: guildConfig.autoplay, paused: guildConfig.paused })],
+            embeds: [playerEmbed({ song: queue.songs[0], autoplay: guildConfig.autoplay, paused: guildConfig.paused })],
         });
     });
 };

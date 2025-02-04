@@ -9,9 +9,9 @@ module.exports = {
         // returning if have any error
         if (error) return;
         // updating the guild config on db
-        await guildUpdate({ guildId: guildId, paused: queue.paused ? true : false });
-        // pausing current queue and emiting a new bot event
-        queue.pause();
+        await guildUpdate({ guildId: guildId, paused: queue.isPaused() ? true : false });
+        // pause or resume current queue and emiting a new bot event
+        queue.isPaused() ? queue.resume() : queue.pause();
         queue.emit('paused', queue);
         // replying interaction and deleting then
         await buttonInteraction.deferReply();

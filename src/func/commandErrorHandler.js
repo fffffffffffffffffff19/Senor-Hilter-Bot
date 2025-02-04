@@ -1,11 +1,13 @@
 const { distube } = require('../main');
+const { MessageFlags } = require('discord.js');
 const { guildFetch } = require('../class/guildTemplate');
-const { needVoiceChannel, noQueue, noGuildOnDB, hasPaused, notPaused } = require('../assets/txt/response');
+const { needVoiceChannel, noQueue, noGuildOnDB } = require('../assets/txt/response');
 
 module.exports = async (interaction, playCommand) => {
     const errorChecker = async (conditional, newValue) => {
-        if (conditional) return interaction.reply({ content: newValue, ephemeral: true }).then(() => (error = true));
-    };
+        if (conditional) return interaction.reply({ content: newValue, flags: MessageFlags.Ephemeral }).then(() => {
+            (error = true)
+        })};
 
     let error;
     const member = await interaction.guild.members.cache.get(interaction.member.id);
@@ -20,8 +22,6 @@ module.exports = async (interaction, playCommand) => {
     if (playCommand) return { guildId, voiceChannel, member, error };
     // checking if exists any queue from this guild
     await errorChecker(!queue, noQueue);
-    // checking if queue already paused
-    await errorChecker(queue?.paused, queue?.paused ? hasPaused : notPaused);
 
     return { guildId, queue, voiceChannel, member, error };
 };
