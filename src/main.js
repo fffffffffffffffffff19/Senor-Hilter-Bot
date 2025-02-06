@@ -1,5 +1,7 @@
-const { Client, GatewayIntentBits } = require('discord.js');
 const { Player } = require('discord-player');
+const { Client, GatewayIntentBits } = require('discord.js');
+const { YoutubeiExtractor } = require('discord-player-youtubei');
+const { SpotifyExtractor, SoundCloudExtractor, AttachmentExtractor } = require('@discord-player/extractor');
 
 class SenorHilter {
     constructor() {
@@ -15,6 +17,12 @@ class SenorHilter {
         });
 
         this.player = new Player(this.client);
+        this.extractorRegister = this.player.extractors.loadMulti([
+            SpotifyExtractor,
+            YoutubeiExtractor,
+            SoundCloudExtractor,
+            AttachmentExtractor,
+        ]);
     }
 }
 

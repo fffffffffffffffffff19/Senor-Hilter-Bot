@@ -1,13 +1,13 @@
 const { EmbedBuilder } = require('discord.js');
 
-module.exports = (song) =>
+module.exports = (track) =>
     new EmbedBuilder()
         .setAuthor({
             name: '⋮ Song Added ·',
-            iconURL: song.user.avatarURL(),
+            iconURL: track.requestedBy.avatarURL(),
         })
-        .setDescription(`[${song.name}](${song.url})`)
-        .setThumbnail(`${song.thumbnail}`)
+        .setDescription(`[${track.title}](${track.url})`)
+        .setThumbnail(`${track.thumbnail}`)
         .setColor('#191970')
         .setFooter({
             text: 'fffffffffffffffs • /help for all commands',

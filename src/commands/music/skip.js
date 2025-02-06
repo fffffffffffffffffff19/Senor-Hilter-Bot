@@ -8,15 +8,16 @@ module.exports = {
     async execute(interaction) {
         // getting guildId, player queue and any error
         const { guildId, queue, error } = await commandErrorHandler(interaction);
-        const guildConfig = await guildGet(guildId);
         // returning if have any error
         if (error) return;
+
+        const guildConfig = await guildGet(guildId);
         // returning if not have song to skip
-        if (queue.songs.length === 1 && guildConfig.autoplay == false) {
+        /*         if (queue.songs.length === 1 && guildConfig.autoplay == false) { // esse e o verificador antigo, tem que fazer um novo
             return interaction.reply({ content: noQueueToSkip, ephemeral: true });
-        }
+        } */
         // skipping current song on queue
-        await queue.skip();
+        queue.node.skip();
         // replying interaction and deleting then
         await interaction.deferReply();
         await interaction.deleteReply();

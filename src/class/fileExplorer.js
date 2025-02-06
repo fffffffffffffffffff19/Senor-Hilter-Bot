@@ -73,7 +73,7 @@ class FileExplorer {
         };
 
         this.findPlayerEvents = () => {
-            const location = '../events/distube';
+            const location = '../events/player';
             const items = [];
 
             for (const event of this.itemsFolders(location)) {

@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "description": "A discord music bot (maybe)",
     "main": "app.js",
     "scripts": {
@@ -16,10 +16,14 @@
         "@discord-player/extractor": "^7.1.0",
         "@discordjs/opus": "^0.10.0",
         "discord-player": "^7.1.0",
+        "discord-player-deezer": "^2.3.0",
+        "discord-player-tidal": "^0.1.0",
+        "discord-player-youtubei": "^1.4.2",
         "discord.js": "^14.17.3",
         "dotenv": "^16.4.5",
         "pm2": "^5.3.1",
         "sequelize": "^6.37.3",
+        "soundgasm-extractor": "^1.1.4",
         "sqlite3": "^5.1.7",
         "winston": "^3.13.0",
         "winston-daily-rotate-file": "^5.0.0",
