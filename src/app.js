@@ -1,18 +1,24 @@
-const { client, distube } = require('./main');
+const { client, player } = require('./main');
 const { Collection } = require('discord.js');
-const { findHandlers, findDistubeEvents } = require('./class/fileExplorer');
+const { findHandlers, findPlayerEvents } = require('./class/fileExplorer');
 const { createLogger, fileName } = require('./class/logger');
+const { DefaultExtractors } = require('@discord-player/extractor');
 const database = require('../src/database/sequelize');
 const guildConfigDatabase = require('./database/models/guildConfig');
 
 require('dotenv').config();
+
+(async () => {
+    await player.extractors.loadMulti(DefaultExtractors);
+})();
 
 client.login(process.env.TOKEN);
 client.guildConfig = new Collection();
 
 const finders = () => {
     findHandlers().forEach((handler) => require(handler)(client));
-    findDistubeEvents().forEach((distubeEvent) => require(distubeEvent)(distube));
+    //findPlayerEvents().forEach((playerEvents) => require(playerEvents)(player));
+    require('./events/player/initQueueEvent')(player);
 };
 
 (async () => {

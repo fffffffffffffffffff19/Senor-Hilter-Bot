@@ -72,7 +72,7 @@ class FileExplorer {
             return items;
         };
 
-        this.findDistubeEvents = () => {
+        this.findPlayerEvents = () => {
             const location = '../events/distube';
             const items = [];
 

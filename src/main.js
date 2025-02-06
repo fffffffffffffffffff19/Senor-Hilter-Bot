@@ -1,8 +1,5 @@
-const { DisTube } = require('distube');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { SpotifyPlugin } = require('@distube/spotify');
-const { YouTubePlugin } = require('@distube/youtube')
-// const { cookie } = require('../config');
+const { Player } = require('discord-player');
 
 class SenorHilter {
     constructor() {
@@ -17,15 +14,7 @@ class SenorHilter {
             ],
         });
 
-        this.distube = new DisTube(this.client, {
-            emitNewSongOnly: false,
-            savePreviousSongs: true,
-            nsfw: true,
-            plugins: [
-                new SpotifyPlugin(),
-                new YouTubePlugin(),
-            ],
-        });
+        this.player = new Player(this.client);
     }
 }
 
