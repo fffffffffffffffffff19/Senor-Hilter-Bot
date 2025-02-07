@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { guildUpdate } = require('../../class/guildTemplate');
 const { notPaused } = require('../../assets/txt/response');
+const { useTimeline } = require('discord-player');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
@@ -10,12 +11,14 @@ module.exports = {
         const { guildId, queue, error } = await commandErrorHandler(interaction);
         // returning if have any error
         if (error) return;
+        // geting the timeLine instance from the guildId
+        const timeLine = useTimeline({ node: guildId });
         // check if has paused
-        if (!queue.isPlaying()) return interaction.reply({ content: notPaused, flags: MessageFlags.Ephemeral });
+        if (!timeLine.paused) return interaction.reply({ content: notPaused, flags: MessageFlags.Ephemeral });
         // updating the guild config on db
         await guildUpdate({ guildId: guildId, paused: false });
         // resuming the song and emiting a new bot
-        queue.resume();
+        timeLine.resume();
         queue.emit('paused', queue);
         // replying interaction and delete then
         await interaction.deferReply();
