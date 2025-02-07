@@ -18,9 +18,12 @@ module.exports = async (guildConfig, playerChannel, guildId) => {
         });
     } catch (error) {
         // if not, sending a new one and updating then on db
-        return webhook.send({ embeds: [playerEmbed()], components: [row1, row2] }).then(async (msg) => {
+        await webhook.send({ embeds: [playerEmbed()], components: [row1, row2] }).then(async (msg) => {
+            playerMessage = msg;
             await guildUpdate({ guildId: guildId, webhookMessage: msg });
         });
+
+        return { webhook, playerMessage };
     }
     // checking if player message as sent from the same webhook on channel
     try {
@@ -28,9 +31,12 @@ module.exports = async (guildConfig, playerChannel, guildId) => {
     } catch (error) {
         // if not, seding a new one and updating then on db
         await playerMessage.delete();
-        return webhook.send({ embeds: [playerEmbed()], components: [row1, row2] }).then(async (msg) => {
+        await webhook.send({ embeds: [playerEmbed()], components: [row1, row2] }).then(async (msg) => {
+            playerMessage = msg;
             await guildUpdate({ guildId: guildId, webhookMessage: msg });
         });
+
+        return { webhook, playerMessage };
     }
 
     return { webhook, playerMessage };

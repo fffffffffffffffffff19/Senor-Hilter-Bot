@@ -9,8 +9,7 @@ module.exports = {
         // returning if have any error
         if (error) return;
         // stopping current queue and emiting a new bot event
-        queue.stop();
-        queue.emit('finish', queue);
+        queue.emit('emptyQueue', queue);
         // replying interaction and deleting then
         await interaction.deferReply();
         await interaction.deleteReply();

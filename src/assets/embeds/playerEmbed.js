@@ -3,19 +3,19 @@ const { avatarURL, color, embedImages } = require('../../../config');
 
 const randomImage = () => embedImages[Math.floor(Math.random() * embedImages.length)];
 
-module.exports = ({ song, autoplay, paused } = {}) =>
+module.exports = ({ track, autoplay, paused } = {}) =>
     new EmbedBuilder()
         .setAuthor({
-            name: song ? '⋮ Now Playing ·' : '⋮ Nothing playing  ·  /play <link>',
-            iconURL: song ? song?.user.avatarURL() : avatarURL,
+            name: track ? '⋮ Now Playing ·' : '⋮ Nothing playing  ·  /play <link>',
+            iconURL: track ? track.requestedBy.avatarURL() : avatarURL,
         })
         .setDescription(
-            song
-                ? `[${song?.name}](${song?.url})\n**Length: ${song?.formattedDuration} Autoplay: ${autoplay ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'} Paused: ${paused ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'}**`
+            track
+                ? `[${track.title}](${track.url})\n**Length: ${track.duration} Autoplay: ${autoplay ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'} Paused: ${paused ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'}**`
                 : null,
         )
         .setImage(randomImage())
-        .setThumbnail(song ? song?.thumbnail : null)
+        .setThumbnail(track ? track.thumbnail : null)
         .setColor(color || '#FFFFFF')
         .setFooter({
             text: 'fffffffffffffffs • /help for all commands',

@@ -9,4 +9,5 @@ module.exports = {
     shuffled: 'Shuffled the queue.',
     noGuildOnDB: 'Need to run `/setup` before this',
     noSongSearch: 'No song found from this input',
+    noPreviousSong: 'Not have previous song to play',
 };

@@ -1,3 +1,4 @@
+const { QueueRepeatMode } = require('discord-player');
 const { guildUpdate } = require('../../class/guildTemplate');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
@@ -9,9 +10,9 @@ module.exports = {
         // returning if have any error
         if (error) return;
         // toggle autoplay in queue
-        const autoplay = queue.toggleAutoplay();
+        queue.repeatMode ? queue.setRepeatMode(QueueRepeatMode.OFF) : queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
         // updating guild config on db
-        await guildUpdate({ guildId: guildId, autoplay: autoplay });
+        await guildUpdate({ guildId: guildId, autoplay: queue.repeatMode ? true : false });
         // emiting a new bot event
         queue.emit('autoplay', queue);
         // replying interaction and deleting then

@@ -26,6 +26,5 @@ module.exports = async (interaction, playCommand) => {
     if (playCommand) return { guildId, voiceChannel, member, error };
     // checking if exists any queue from this guild
     await errorChecker(!queue, noQueue);
-
     return { guildId, queue, voiceChannel, member, error };
 };

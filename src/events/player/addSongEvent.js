@@ -4,11 +4,10 @@ const addSong = require('../../assets/embeds/addSongEmbed');
 
 module.exports = (player) => {
     player.events.on('audioTrackAdd', async (queue, track) => {
-        //console.log(track);
+        // getting guild info
         const guildId = queue.options.guild.id;
         const guildConfig = await guildGet(guildId);
         const playerChannel = queue.options.guild.channels.cache.get(guildConfig.textChannel);
-
         // get webhook and send new song added on player channel
         const webhook = await getWebhook(playerChannel);
         await webhook

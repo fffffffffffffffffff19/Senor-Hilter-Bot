@@ -11,10 +11,11 @@ module.exports = {
         if (error) return;
         // geting the timeLine instance from the guildId
         const timeLine = useTimeline({ node: guildId });
+        // pause or resume current queue
+        timeLine.paused ? timeLine.resume() : timeLine.pause();
         // updating the guild config on db
         await guildUpdate({ guildId: guildId, paused: timeLine.paused ? true : false });
-        // pause or resume current queue and emiting a new bot event
-        timeLine.paused ? timeLine.resume() : timeLine.pause();
+        // emiting new bot event
         queue.emit('paused', queue);
         // replying interaction and deleting then
         await buttonInteraction.deferReply();
