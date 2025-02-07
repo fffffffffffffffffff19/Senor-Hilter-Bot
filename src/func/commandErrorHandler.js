@@ -4,11 +4,13 @@ const { needVoiceChannel, noQueue, noGuildOnDB } = require('../assets/txt/respon
 const { useQueue } = require('discord-player');
 
 module.exports = async (interaction, playCommand) => {
+    // func to return certain conditions
     const errorChecker = async (conditional, newValue) => {
-        if (conditional)
+        if (conditional) {
             return interaction.reply({ content: newValue, flags: MessageFlags.Ephemeral }).then(() => {
                 error = true;
             });
+        }
     };
 
     let error;

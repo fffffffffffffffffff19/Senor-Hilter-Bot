@@ -1,4 +1,4 @@
-const { Collection, Events } = require('discord.js');
+const { Collection, Events, MessageFlags } = require('discord.js');
 const { findCommands } = require('../class/fileExplorer');
 const { createLogger } = require('../class/logger');
 
@@ -13,25 +13,26 @@ module.exports = (client) => {
     client.on(Events.InteractionCreate, async (interaction) => {
         if (!interaction.isChatInputCommand()) return;
 
-        if (!interaction.client.commands.get(interaction.commandName))
+        if (!interaction.client.commands.get(interaction.commandName)) {
             return createLogger.error(`Error for run "${interaction.commandName}"`);
+        }
 
         try {
             await interaction.client.commands.get(interaction.commandName).execute(interaction);
         } catch (error) {
             if (interaction.replied || interaction.deferred) {
                 console.log(error);
-                /* createLogger.error(__filename, error); */
+                createLogger.error(__filename, error);
                 await interaction.followUp({
                     content: 'There was an error while executing this command!',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
-                // createLogger.error(__filename, error);
                 console.log(error);
+                createLogger.error(__filename, error);
                 await interaction.reply({
                     content: 'There was an error while executing this command!',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }

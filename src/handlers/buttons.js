@@ -1,4 +1,4 @@
-const { Collection, Events } = require('discord.js');
+const { Collection, Events, MessageFlags } = require('discord.js');
 const { findButtons } = require('../class/fileExplorer');
 const { createLogger } = require('../class/logger');
 
@@ -12,6 +12,7 @@ module.exports = (client) => {
 
     client.on(Events.InteractionCreate, async (interaction) => {
         if (!interaction.isButton()) return;
+
         if (!interaction.client.buttons.get(interaction.customId)) {
             return createLogger.error(`Error for run "${interaction.customId}"`);
         }
@@ -20,16 +21,20 @@ module.exports = (client) => {
             await interaction.client.buttons.get(interaction.customId).execute(interaction);
         } catch (erro) {
             if (interaction.replied || interaction.deferred) {
+                console.log(erro);
                 createLogger.error(__filename, erro);
+
                 await interaction.followUp({
                     content: 'There was an error while executing this command!',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             } else {
+                console.log(erro);
                 createLogger.error(__filename, erro);
+
                 await interaction.reply({
                     content: 'There was an error while executing this command!',
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                 });
             }
         }
