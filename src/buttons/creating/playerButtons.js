@@ -14,7 +14,8 @@ const pausedButton = new ButtonBuilder()
 const addToPlaylistButton = new ButtonBuilder()
     .setCustomId('addToPlaylistButton')
     .setEmoji(buttonsEmojis?.addToPlaylistButton || '📥')
-    .setStyle(ButtonStyle.Secondary);
+    .setStyle(ButtonStyle.Secondary)
+    .setDisabled(true);
 
 const stopButton = new ButtonBuilder()
     .setCustomId('stopButton')
@@ -47,7 +48,8 @@ const autoplayButton = new ButtonBuilder()
 const profileButton = new ButtonBuilder()
     .setCustomId('profileButton')
     .setEmoji(buttonsEmojis?.profileButton || '👤')
-    .setStyle(ButtonStyle.Secondary);
+    .setStyle(ButtonStyle.Secondary)
+    .setDisabled(true);
 
 const repeatButton = new ButtonBuilder()
     .setCustomId('repeatButton')
