@@ -3,22 +3,36 @@ const { avatarURL, color, embedImages } = require('../../../config');
 
 const randomImage = () => embedImages[Math.floor(Math.random() * embedImages.length)];
 
-module.exports = ({ track, autoplay, paused } = {}) =>
-    new EmbedBuilder()
+module.exports = ({ track } = {}) => {
+    if (!track) {
+        return new EmbedBuilder()
+            .setAuthor({
+                name: '⋮ Nothing playing  ·  /play <link>',
+                iconURL: avatarURL,
+            })
+            .setDescription(null)
+            .setImage(randomImage())
+            .setThumbnail(null)
+            .setColor(color || '#FFFFFF')
+            .setFooter({
+                text: 'fffffffffffffffs • /help for all commands',
+                iconURL: avatarURL,
+            })
+            .setTimestamp();
+    }
+
+    return new EmbedBuilder()
         .setAuthor({
-            name: track ? '⋮ Now Playing ·' : '⋮ Nothing playing  ·  /play <link>',
-            iconURL: track ? track.requestedBy.avatarURL() : avatarURL,
+            name: '⋮ Now Playing ·',
+            iconURL: track.requestedBy.avatarURL(),
         })
-        .setDescription(
-            track
-                ? `[${track.title}](${track.url})\n**Length: ${track.duration} Autoplay: ${autoplay ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'} Paused: ${paused ? '<:sim:1179101437351972956>' : '<:nao:1179101253729525860>'}**`
-                : null,
-        )
+        .setDescription(`[${track.title}](${track.url})\nDuration: ${track.duration}`)
         .setImage(randomImage())
-        .setThumbnail(track ? track.thumbnail : null)
+        .setThumbnail(track.thumbnail)
         .setColor(color || '#FFFFFF')
         .setFooter({
             text: 'fffffffffffffffs • /help for all commands',
             iconURL: avatarURL,
         })
         .setTimestamp();
+};

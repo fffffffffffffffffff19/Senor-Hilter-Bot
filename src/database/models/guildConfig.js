@@ -7,4 +7,5 @@ module.exports = database.define('guildConfig', {
     webhookMessage: DataTypes.TEXT,
     autoplay: DataTypes.BOOLEAN,
     paused: DataTypes.BOOLEAN,
+    repeatMode: DataTypes.BOOLEAN,
 });

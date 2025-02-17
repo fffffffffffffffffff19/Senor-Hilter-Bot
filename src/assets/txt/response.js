@@ -10,4 +10,6 @@ module.exports = {
     noGuildOnDB: 'Need to run `/setup` before this',
     noSongSearch: 'No song found from this input',
     noPreviousSong: 'Not have previous song to play',
+    disableAutoplay: 'You need to disable `/autoplay` to do this',
+    disableRepeatMode: 'You need to disable `/repeat` to do this',
 };

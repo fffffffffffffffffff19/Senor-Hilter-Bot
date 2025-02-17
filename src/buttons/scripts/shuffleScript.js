@@ -8,7 +8,9 @@ module.exports = {
         // returning if have any error
         if (error) return;
         // shuffling the current queue
-        queue.shuffle();
+        queue.tracks.shuffle();
+        // emiting a new event
+        queue.emit('shuffled', queue);
         // replying interaction and deleting then
         await buttonInteraction.deferReply();
         await buttonInteraction.deleteReply();

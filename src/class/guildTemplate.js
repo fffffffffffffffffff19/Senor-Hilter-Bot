@@ -12,10 +12,16 @@ class GuildTemplate {
         };
         // create a new guild config on database
         this.guildCreate = async (guildId) => {
-            await database.create({ guild: guildId, textChannel: null, autoplay: null, paused: null });
+            await database.create({
+                guild: guildId,
+                textChannel: null,
+                autoplay: false,
+                paused: false,
+                repeatMode: false,
+            });
         };
         // update a guildconfig on database
-        this.guildUpdate = async ({ guildId, textChannel, webhookMessage, autoplay, paused, stop, skip } = {}) => {
+        this.guildUpdate = async ({ guildId, textChannel, webhookMessage, autoplay, paused, repeatMode } = {}) => {
             // throw a error if guildId is undefined
             if (!guildId) throw new Error('guildId cannot be undefined');
             // function to handle field and values
@@ -29,8 +35,7 @@ class GuildTemplate {
             await updateDatabase('webhookMessage', webhookMessage?.id);
             await updateDatabase('autoplay', autoplay);
             await updateDatabase('paused', paused);
-            await updateDatabase('stop', stop);
-            await updateDatabase('skip', skip);
+            await updateDatabase('repeatMode', repeatMode);
         };
     }
 }

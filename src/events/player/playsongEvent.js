@@ -14,7 +14,14 @@ module.exports = (player) => {
         // checking if have any error on player and edit them
         const { webhook, playerMessage } = await playerErrorHandler(guildConfig, playerChannel, guildId);
         await webhook.editMessage(playerMessage, {
-            embeds: [playerEmbed({ track, autoplay: guildConfig.autoplay, paused: guildConfig.paused })],
+            embeds: [
+                playerEmbed({
+                    track,
+                    autoplay: guildConfig.autoplay,
+                    paused: guildConfig.paused,
+                    repeatMode: guildConfig.repeatMode,
+                }),
+            ],
         });
     });
 };

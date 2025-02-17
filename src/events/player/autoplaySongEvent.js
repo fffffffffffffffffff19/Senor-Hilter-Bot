@@ -1,17 +1,17 @@
 const { guildGet } = require('../../class/guildTemplate');
-const playerEmbed = require('../../assets/embeds/playerEmbed');
-const playerErrorHandler = require('../../func/playerErrorHandler');
+const { getWebhook } = require('../../class/webhookManager');
+const autoplayEmbed = require('../../assets/embeds/autoplayEmbed');
 
 module.exports = (player) => {
     player.events.on('autoplay', async (queue) => {
-        const track = queue.dispatcher.audioResource.metadata;
+        // getting guild info
         const guildId = queue.options.guild.id;
         const guildConfig = await guildGet(guildId);
         const playerChannel = await queue.channel.guild.channels.cache.get(guildConfig.textChannel);
-        const { webhook, playerMessage } = await playerErrorHandler(guildConfig, playerChannel, guildId);
-
-        await webhook.editMessage(playerMessage, {
-            embeds: [playerEmbed({ track: track, autoplay: guildConfig.autoplay, paused: guildConfig.paused })],
-        });
+        // get webhook and send autoplay enabled on player channel
+        const webhook = await getWebhook(playerChannel);
+        await webhook
+            .send({ embeds: [await autoplayEmbed(guildConfig.autoplay)] })
+            .then((msg) => setTimeout(() => msg.delete().catch(() => {}), 10000)); // 10 seconds
     });
 };

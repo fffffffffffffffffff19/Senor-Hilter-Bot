@@ -18,6 +18,7 @@ module.exports = (player) => {
                 guildId: guildId,
                 autoplay: false,
                 paused: false,
+                repeatMode: false,
                 webhookMessage: msg,
             });
         });
