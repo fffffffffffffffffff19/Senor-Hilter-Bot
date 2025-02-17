@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.2.8",
+    "version": "3.3.0",
     "description": "A discord music bot (maybe)",
     "main": "app.js",
     "scripts": {
