@@ -1,4 +1,4 @@
-const cookiesFetch = require('./src/func/cookiesFetch');
+// const cookiesFetch = require('./src/func/cookiesFetch');
 
 module.exports = {
     /* Bot info */
@@ -10,8 +10,6 @@ module.exports = {
     /* Player Embed */
     imageURL: 'https://i.imgur.com/zMl6N34.gif', // main embed image
     color: '#a626a6', // main embed color (need HEX code "#FFFFFF")
-    /* Cookie Resolver */
-    cookie: cookiesFetch(), // used if you want to play mature videos on yt
     /* Buttons Emojis */
     buttonsEmojis: {
         previosButton: '<:previos:1273336377538379809>',
