@@ -3,7 +3,7 @@ const { getWebhook } = require('../../class/webhookManager');
 const pausedEmbed = require('../../assets/embeds/pausedEmbed');
 
 module.exports = (player) => {
-    player.events.on('playerPause', async (queue) => {
+    player.events.on('paused', async (queue) => {
         // getting guild info
         const guildId = queue.options.guild.id;
         const guildConfig = await guildGet(guildId);
