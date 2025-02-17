@@ -6,7 +6,10 @@ const { row1, row2 } = require('../../buttons/creating/playerButtons');
 const playerEmbed = require('../../assets/embeds/playerEmbed');
 
 module.exports = {
-    data: new SlashCommandBuilder().setName('setup').setDescription('create a music channel.'),
+    data: new SlashCommandBuilder()
+        .setName('setup')
+        .setDescription('create a music channel.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction) {
         await interaction.deferReply();
 

@@ -1,5 +1,5 @@
 const { row1, row2 } = require('../../buttons/creating/playerButtons');
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, MessageFlags, PermissionFlagsBits } = require('discord.js');
 const { guildUpdate, guildCreate, guildGet, guildFetch } = require('../../class/guildTemplate');
 const { fetchWebhook, getWebhook, createWebhook } = require('../../class/webhookManager');
 const playerEmbed = require('../../assets/embeds/playerEmbed');
@@ -8,7 +8,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('setchannel')
         .setDescription('set a new channel for the bot')
-        .addChannelOption((option) => option.setName('channel').setDescription('Text Channel').setRequired(true)),
+        .addChannelOption((option) => option.setName('channel').setDescription('Text Channel').setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction) {
         const guild = interaction.guild;
         const guildChannel = guild.channels;
@@ -18,9 +19,9 @@ module.exports = {
         if (!(await guildFetch(guildId))) await guildCreate(guildId);
         // checking if user selected channel are textChannel based
         if (channelOption.type !== ChannelType.GuildText) {
-            return await interaction.reply({
+            return interaction.reply({
                 content: 'Invalid channel, only text channel is allowed.',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
 
@@ -29,7 +30,7 @@ module.exports = {
         const oldWebhookMessage = guildConfig.webhookMessage;
         // checking if the textchannel on db is the same selected by user
         if (oldTextChannel === channelOption.id) {
-            return interaction.reply({ content: 'This channel already as selected', ephemeral: true });
+            return interaction.reply({ content: 'This channel already as selected', flags: MessageFlags.Ephemeral });
         }
         // checking if have old bot player message
         if (oldWebhookMessage) {
@@ -44,7 +45,7 @@ module.exports = {
             // if not will update the db with null
             await guildUpdate({ guildId: guildId, textChannel: null, webhookMessage: null });
         }
-        // checking if on selected channel have webhook
+        // checking if selected channel have webhook
         if (!(await fetchWebhook(channelOption))) await createWebhook(channelOption);
 
         const webhook = await getWebhook(channelOption);
