@@ -1,30 +1,32 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { noQueue, needVoiceChannel } = require('./config/response');
-const { distube } = require('../../main');
-const { createLogger, fileName } = require('../../tools/logger');
-const { guildMapGet } = require('../../class/guildTemplate');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { QueueRepeatMode } = require('discord-player');
+const { guildUpdate } = require('../../class/guildTemplate');
+const { disableRepeatMode } = require('../../assets/txt/response');
+const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('autoplay')
-        .setDescription('Auto play songs with the same gender'),
+    data: new SlashCommandBuilder().setName('autoplay').setDescription('Auto play songs with the same gender'),
     async execute(interaction) {
-        try {
-            const gTemplate = guildMapGet(interaction.guild.id);
-            const queue = distube.getQueue(interaction);
-
-            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
-
-            const autoplay = queue.toggleAutoplay();
-
-            if (autoplay) gTemplate.autoplay = true;
-            else gTemplate.autoplay = false;
-
-            await interaction.deferReply('1');
-            await interaction.deleteReply();
-
-            queue.emit('autoplay', queue);
-        } catch (erro) { createLogger.error(fileName, erro); }
+        // getting guildId, player queue and any error
+        const { queue, error, guildId } = await commandErrorHandler(interaction);
+        // checking if has any error
+        if (error) return;
+        // checking if repeat mode is enabled
+        if (queue.repeatMode === QueueRepeatMode.TRACK) {
+            return interaction.reply({ content: disableRepeatMode, flags: MessageFlags.Ephemeral });
+        }
+        // checking if autoplay is on or off
+        if (queue.repeatMode === QueueRepeatMode.AUTOPLAY) {
+            queue.setRepeatMode(QueueRepeatMode.OFF);
+            await guildUpdate({ guildId: guildId, autoplay: false });
+        } else {
+            queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
+            await guildUpdate({ guildId: guildId, autoplay: true });
+        }
+        // emiting new event
+        queue.emit('autoplay', queue);
+        // replying interaction
+        await interaction.deferReply();
+        await interaction.deleteReply();
     },
 };

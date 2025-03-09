@@ -1,9 +1,7 @@
+const { Player } = require('discord-player');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { DisTube } = require('distube');
-const { SpotifyPlugin } = require('@distube/spotify');
-const { SoundCloudPlugin } = require('@distube/soundcloud');
-const { DeezerPlugin } = require('@distube/deezer');
-const { leaveOnEmpty, leaveOnFinish, leaveOnStop } = require('../config').distubeConfig;
+const { YoutubeiExtractor } = require('discord-player-youtubei');
+const { SpotifyExtractor, SoundCloudExtractor, AttachmentExtractor } = require('@discord-player/extractor');
 
 class SenorHilter {
     constructor() {
@@ -18,19 +16,13 @@ class SenorHilter {
             ],
         });
 
-        this.distube = new DisTube(this.client, {
-            leaveOnFinish,
-            leaveOnEmpty,
-            leaveOnStop,
-            emitNewSongOnly: false,
-            savePreviousSongs: true,
-            searchSongs: 0,
-            plugins: [
-                new SpotifyPlugin(),
-                new SoundCloudPlugin(),
-                new DeezerPlugin(),
-            ],
-        });
+        this.player = new Player(this.client);
+        this.extractorRegister = this.player.extractors.loadMulti([
+            SpotifyExtractor,
+            YoutubeiExtractor,
+            SoundCloudExtractor,
+            AttachmentExtractor,
+        ]);
     }
 }
 

@@ -132,3 +132,9 @@ dist
 # teste commands
 teste.js
 teste
+
+# sqliteDB
+*.sqlite
+
+# cookies
+cookie.json

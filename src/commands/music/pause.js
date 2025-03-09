@@ -1,33 +1,27 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { distube } = require('../../main');
-const { hasPaused, noQueue, needVoiceChannel } = require('./config/response');
-const { guildMapGet } = require('../../class/guildTemplate');
-const { createLogger, fileName } = require('../../tools/logger');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { guildUpdate } = require('../../class/guildTemplate');
+const { hasPaused } = require('../../assets/txt/response');
+const { useTimeline } = require('discord-player');
+const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('pause')
-        .setDescription('Pause current song'),
+    data: new SlashCommandBuilder().setName('pause').setDescription('Pause current song'),
     async execute(interaction) {
-        try {
-            const gTemplate = guildMapGet(interaction.guild.id);
-            const queue = distube.getQueue(interaction);
-
-            if (!queue.voiceChannel.members.get(interaction.user.id)) return interaction.reply({ content: needVoiceChannel, ephemeral: true });
-            if (!queue) return interaction.reply({ content: noQueue, ephemeral: true });
-
-            if (queue.paused) {
-                queue.resume();
-                return interaction.reply({ content: hasPaused, ephemeral: true });
-            }
-
-            await interaction.deferReply('1');
-            await interaction.deleteReply();
-
-            gTemplate.paused = true;
-
-            queue.pause();
-            queue.emit('paused', queue);
-        } catch (erro) { createLogger.error(fileName, erro); }
+        // getting guildId, player queue and any error
+        const { guildId, queue, error } = await commandErrorHandler(interaction);
+        // returning if have any error
+        if (error) return;
+        // geting the timeLine instance from the guildId
+        const timeLine = useTimeline({ node: guildId });
+        // check if has paused
+        if (timeLine.paused) return interaction.reply({ content: hasPaused, flags: MessageFlags.Ephemeral });
+        // updating the guild config on db
+        await guildUpdate({ guildId: guildId, paused: true });
+        // pausing current queue and emiting a new bot event
+        timeLine.pause();
+        queue.emit('paused', queue);
+        // replying interaction and deleting then
+        await interaction.deferReply();
+        await interaction.deleteReply();
     },
 };
