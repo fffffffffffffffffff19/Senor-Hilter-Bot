@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.3.1",
+    "version": "3.3.2",
     "description": "A discord music bot (maybe)",
     "main": "app.js",
     "scripts": {
@@ -15,6 +15,7 @@
     "dependencies": {
         "@discord-player/extractor": "^7.1.0",
         "@discordjs/opus": "^0.10.0",
+        "bgutils-js": "^3.2.0",
         "discord-player": "^7.1.0",
         "discord-player-deezer": "^2.3.0",
         "discord-player-tidal": "^0.1.0",
