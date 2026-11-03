@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.4.0",
+    "version": "3.4.1",
     "description": "A Discord music bot powered by Lavalink",
     "main": "src/app.js",
     "type": "commonjs",

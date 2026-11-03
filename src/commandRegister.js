@@ -1,8 +1,8 @@
+require('dotenv').config();
+
 const { REST, Routes } = require('discord.js');
 const { findCommands } = require('./class/fileExplorer');
 const { createLogger, fileName } = require('./class/logger');
-
-require('dotenv').config();
 
 const { TOKEN, CLIENT_ID } = process.env;
 
@@ -24,6 +24,7 @@ const rest = new REST().setToken(TOKEN);
 
         return console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
-        createLogger.error(fileName, error);
+        createLogger.error(fileName(__filename), error);
+        process.exitCode = 1;
     }
 })();

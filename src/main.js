@@ -28,6 +28,11 @@ const lavalink = new LavalinkManager({
         if (guild) return guild.shard.send(payload);
     },
     autoSkip: true,
+    linksBlacklist: [
+        /^https?:\/\/(?:[^/?#@]+@)?(?:localhost\.?|[^./:?#]+)(?::\d+)?(?:[/?#]|$)/i,
+        /^https?:\/\/(?:[^/?#@]+@)?(?:[a-z0-9-]+\.)*(?:localhost|local|internal|lan|home|home\.arpa)\.?(?::\d+)?(?:[/?#]|$)/i,
+        /^https?:\/\/(?:[^/?#@]+@)?(?:\[[^\]]+\]|(?:\d{1,3}\.){3}\d{1,3}|0x[0-9a-f]+|\d+)(?::\d+)?(?:[/?#]|$)/i,
+    ],
     client: {
         id: process.env.CLIENT_ID,
         username: clientConfig.clientUsername,

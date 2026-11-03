@@ -21,14 +21,12 @@ module.exports = (client) => {
             await interaction.client.commands.get(interaction.commandName).execute(interaction);
         } catch (error) {
             if (interaction.replied || interaction.deferred) {
-                console.log(error);
                 createLogger.error(__filename, error);
                 await interaction.followUp({
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,
                 });
             } else {
-                console.log(error);
                 createLogger.error(__filename, error);
                 await interaction.reply({
                     content: 'There was an error while executing this command!',

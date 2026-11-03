@@ -21,7 +21,6 @@ module.exports = (client) => {
             await interaction.client.buttons.get(interaction.customId).execute(interaction);
         } catch (erro) {
             if (interaction.replied || interaction.deferred) {
-                console.log(erro);
                 createLogger.error(__filename, erro);
 
                 await interaction.followUp({
@@ -29,7 +28,6 @@ module.exports = (client) => {
                     flags: MessageFlags.Ephemeral,
                 });
             } else {
-                console.log(erro);
                 createLogger.error(__filename, erro);
 
                 await interaction.reply({
