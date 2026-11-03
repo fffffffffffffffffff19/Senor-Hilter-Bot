@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.4.1",
+    "version": "3.4.2",
     "description": "A Discord music bot powered by Lavalink",
     "main": "src/app.js",
     "type": "commonjs",
@@ -9,28 +9,29 @@
         "dev": "nodemon ./src/app.js",
         "pm2": "pm2 start ./src/app.js && pm2 monit",
         "stop": "pm2 del app",
-        "registerSlash": "node ./src/commandRegister.js"
+        "register-slash": "node ./src/commandRegister.js",
+        "lint": "eslint src"
     },
     "author": "fffffffffffffffffffffffffffffffs",
     "license": "ISC",
     "dependencies": {
-        "discord.js": "^14.17.3",
-        "dotenv": "^16.4.5",
+        "discord.js": "^14.28.0",
+        "dotenv": "^18.0.9",
         "lavalink-client": "^2.11.0",
-        "pm2": "^5.3.1",
-        "sequelize": "^6.37.3",
-        "sqlite3": "^5.1.7",
-        "winston": "^3.13.0",
+        "pm2": "^7.1.2",
+        "sequelize": "^6.37.8",
+        "sqlite3": "^6.0.1",
+        "winston": "^3.19.0",
         "winston-daily-rotate-file": "^5.0.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.19.0",
-        "eslint": "^9.19.0",
-        "eslint-config-prettier": "^10.0.1",
-        "eslint-plugin-prettier": "^5.2.3",
-        "globals": "^15.14.0",
-        "nodemon": "^3.1.0",
-        "prettier": "^3.3.3"
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.14.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.7",
+        "globals": "^17.14.0",
+        "nodemon": "^3.1.14",
+        "prettier": "^3.9.10"
     },
     "repository": "https://github.com/fffffffffffffffffff19/Senor-Hilter-Bot.git"
 }
