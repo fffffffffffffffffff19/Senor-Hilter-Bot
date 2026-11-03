@@ -1,6 +1,6 @@
 {
     "name": "senor-hilter",
-    "version": "3.4.2",
+    "version": "3.4.3",
     "description": "A Discord music bot powered by Lavalink",
     "main": "src/app.js",
     "type": "commonjs",
@@ -10,6 +10,7 @@
         "pm2": "pm2 start ./src/app.js && pm2 monit",
         "stop": "pm2 del app",
         "register-slash": "node ./src/commandRegister.js",
+        "release": "semantic-release",
         "lint": "eslint src"
     },
     "author": "fffffffffffffffffffffffffffffffs",
@@ -26,12 +27,18 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/git": "^11.0.1",
+        "@semantic-release/github": "^12.0.10",
+        "@semantic-release/npm": "^13.2.0",
+        "@semantic-release/release-notes-generator": "^14.1.1",
         "eslint": "^10.14.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.7",
         "globals": "^17.14.0",
         "nodemon": "^3.1.14",
-        "prettier": "^3.9.10"
+        "prettier": "^3.9.10",
+        "semantic-release": "^25.0.9"
     },
     "repository": "https://github.com/fffffffffffffffffff19/Senor-Hilter-Bot.git"
 }
