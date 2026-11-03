@@ -1,32 +1,23 @@
-const { QueueRepeatMode } = require('discord-player');
 const { MessageFlags } = require('discord.js');
-const { guildUpdate } = require('../../class/guildTemplate');
-const { disableRepeatMode } = require('../../assets/txt/response');
+const { toggleAutoplay } = require('../../audio/controls');
+const { sendTemporaryNotice } = require('../../audio/playerPanel');
+const autoplayEmbed = require('../../assets/embeds/autoplayEmbed');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
     id: 'autoplayButton',
-    async execute(buttonInteraction) {
-        // getting guildId, player queue and any error
-        const { queue, error, guildId } = await commandErrorHandler(buttonInteraction);
-        // checking if has any error
+    async execute(interaction) {
+        const { player, guildId, error } = await commandErrorHandler(interaction);
         if (error) return;
-        // checking if repeat mode is enabled
-        if (queue.repeatMode === QueueRepeatMode.TRACK) {
-            return buttonInteraction.reply({ content: disableRepeatMode, flags: MessageFlags.Ephemeral });
+
+        const result = await toggleAutoplay(player, guildId);
+        if (result.error) {
+            return interaction.reply({ content: result.error, flags: MessageFlags.Ephemeral });
         }
-        // checking if autoplay is on or off
-        if (queue.repeatMode === QueueRepeatMode.AUTOPLAY) {
-            queue.setRepeatMode(QueueRepeatMode.OFF);
-            await guildUpdate({ guildId: guildId, autoplay: false });
-        } else {
-            queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
-            await guildUpdate({ guildId: guildId, autoplay: true });
-        }
-        // emiting new event
-        queue.emit('autoplay', queue);
-        // replying interaction
-        await buttonInteraction.deferReply();
-        await buttonInteraction.deleteReply();
+
+        await interaction.deferUpdate();
+        await sendTemporaryNotice(interaction.client, guildId, {
+            embeds: [await autoplayEmbed(result.enabled)],
+        });
     },
 };

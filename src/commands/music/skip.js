@@ -1,25 +1,27 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { noQueueToSkip } = require('../../assets/txt/response');
 const { guildGet } = require('../../class/guildTemplate');
+const { noQueueToSkip } = require('../../assets/txt/response');
+const { sendTemporaryNotice } = require('../../audio/playerPanel');
+const songSkippedEmbed = require('../../assets/embeds/songSkipedEmbed');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder().setName('skip').setDescription('Skip current song.'),
+    data: new SlashCommandBuilder().setName('skip').setDescription('Skip the current song'),
     async execute(interaction) {
-        // getting guildId, player queue and any error
-        const { guildId, queue, error } = await commandErrorHandler(interaction);
-        // returning if have any error
+        const { guildId, player, error } = await commandErrorHandler(interaction);
         if (error) return;
-        // getting guild config
+
         const guildConfig = await guildGet(guildId);
-        // returning if not have song to skip
-        if (queue.tracks.data.length === 0 && guildConfig.autoplay == false) {
+        if (!player.queue.tracks.length && !guildConfig.autoplay) {
             return interaction.reply({ content: noQueueToSkip, flags: MessageFlags.Ephemeral });
         }
-        // skipping current song on queue
-        queue.node.skip();
-        // replying interaction and deleting then
+
+        const skippedTrack = player.queue.current;
+        await player.skip();
         await interaction.deferReply();
+        await sendTemporaryNotice(interaction.client, guildId, {
+            embeds: [songSkippedEmbed(skippedTrack)],
+        });
         await interaction.deleteReply();
     },
 };

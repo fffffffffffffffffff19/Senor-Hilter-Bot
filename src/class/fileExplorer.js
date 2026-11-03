@@ -1,92 +1,38 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-class FileExplorer {
-    constructor() {
-        this.foldersPath = (folderPath) => path.join(__dirname, folderPath);
-        this.itemsFolders = (folderPath) => fs.readdirSync(this.foldersPath(folderPath));
-
-        this.findButtons = () => {
-            const location = path.resolve('src', 'buttons', 'scripts');
-            const items = [];
-
-            const itemsPath = path.join(location);
-            const buttons = fs.readdirSync(itemsPath).filter((i) => i.endsWith('.js'));
-
-            for (const button of buttons) {
-                const files = path.join(itemsPath, button);
-                const allButtons = require(files);
-
-                items.push(allButtons);
-            }
-
-            return items;
-        };
-
-        this.findCommands = () => {
-            const location = '../commands';
-            const items = [];
-
-            for (const folder of this.itemsFolders(location)) {
-                const itemsPath = path.join(this.foldersPath(location), folder);
-                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
-
-                for (const item of itemsFile) {
-                    const itemPath = path.join(itemsPath, item);
-                    const importedItems = require(itemPath);
-
-                    items.push(importedItems);
-                }
-            }
-            return items;
-        };
-
-        this.findEvents = () => {
-            const location = '../events';
-            const items = [];
-
-            for (const folder of this.itemsFolders(location)) {
-                const itemsPath = path.join(this.foldersPath(location), folder);
-                const itemsFile = fs.readdirSync(itemsPath).filter((item) => item.endsWith('.js'));
-
-                for (const item of itemsFile) {
-                    const itemPath = path.join(itemsPath, item);
-                    const importedItems = require(itemPath);
-
-                    items.push(importedItems);
-                }
-            }
-            return items;
-        };
-
-        this.findHandlers = () => {
-            const location = '../handlers';
-            const items = [];
-
-            for (const handler of this.itemsFolders(location)) {
-                const handlerPath = path.join(this.foldersPath(location), handler);
-
-                items.push(handlerPath);
-            }
-
-            return items;
-        };
-
-        this.findPlayerEvents = () => {
-            const location = '../events/player';
-            const items = [];
-
-            for (const event of this.itemsFolders(location)) {
-                const eventPath = path.join(this.foldersPath(location), event);
-
-                if (!eventPath.endsWith('.js')) continue;
-
-                items.push(eventPath);
-            }
-
-            return items;
-        };
-    }
+function findJavaScriptFiles(directory) {
+    return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+        const entryPath = path.join(directory, entry.name);
+        if (entry.isDirectory()) return findJavaScriptFiles(entryPath);
+        return entry.isFile() && entry.name.endsWith('.js') ? [entryPath] : [];
+    });
 }
 
-module.exports = new FileExplorer();
+function loadModules(directory) {
+    return findJavaScriptFiles(directory).map((filePath) => require(filePath));
+}
+
+module.exports = {
+    findButtons() {
+        const directory = path.resolve(__dirname, '../buttons/scripts');
+        return fs
+            .readdirSync(directory)
+            .filter((name) => name.endsWith('.js'))
+            .map((name) => require(path.join(directory, name)))
+            .filter((button) => button.id && button.execute);
+    },
+    findCommands() {
+        return loadModules(path.resolve(__dirname, '../commands')).filter(
+            (command) => command.data && command.execute,
+        );
+    },
+    findEvents() {
+        return loadModules(path.resolve(__dirname, '../events')).filter(
+            (event) => event.name && event.execute,
+        );
+    },
+    findHandlers() {
+        return findJavaScriptFiles(path.resolve(__dirname, '../handlers'));
+    },
+};

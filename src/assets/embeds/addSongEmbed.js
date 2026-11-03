@@ -1,13 +1,14 @@
 const { EmbedBuilder } = require('discord.js');
+const trackDetails = require('../../audio/trackDetails');
 
-module.exports = (track) =>
-    new EmbedBuilder()
+module.exports = (track) => {
+    const details = trackDetails(track);
+    const description = details.url ? `[${details.title}](${details.url})` : details.title;
+    const embed = new EmbedBuilder()
         .setAuthor({
             name: '⋮ Song Added ·',
-            iconURL: track.requestedBy.avatarURL(),
         })
-        .setDescription(`[${track.title}](${track.url})`)
-        .setThumbnail(`${track.thumbnail}`)
+        .setDescription(description)
         .setColor('#191970')
         .setFooter({
             text: 'fffffffffffffffs • /help for all commands',
@@ -15,3 +16,7 @@ module.exports = (track) =>
         })
         .setTimestamp()
         .setImage('https://i.imgur.com/eiwgdXB.png');
+
+    if (details.thumbnail) embed.setThumbnail(details.thumbnail);
+    return embed;
+};

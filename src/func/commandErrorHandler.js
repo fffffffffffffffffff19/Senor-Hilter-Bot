@@ -1,30 +1,37 @@
 const { MessageFlags } = require('discord.js');
+const { lavalink } = require('../main');
 const { guildFetch } = require('../class/guildTemplate');
 const { needVoiceChannel, noQueue, noGuildOnDB } = require('../assets/txt/response');
-const { useQueue } = require('discord-player');
 
-module.exports = async (interaction, playCommand) => {
-    // func to return certain conditions
-    const errorChecker = async (conditional, newValue) => {
-        if (conditional) {
-            return interaction.reply({ content: newValue, flags: MessageFlags.Ephemeral }).then(() => {
-                error = true;
-            });
-        }
+module.exports = async (interaction, playCommand = false) => {
+    const replyWithError = async (content) => {
+        await interaction.reply({ content, flags: MessageFlags.Ephemeral });
+        return { error: true };
     };
 
-    let error;
-    const member = await interaction.guild.members.cache.get(interaction.member.id);
-    const voiceChannel = await member.voice.channel;
-    const guildId = await interaction.guild.id;
-    const queue = useQueue(guildId);
-    // checking if guild as registed on db
-    await errorChecker(!(await guildFetch(guildId)), noGuildOnDB);
-    // checking if interaction.user are on client channel
-    await errorChecker(!voiceChannel, needVoiceChannel);
-    // returning if command runned is /play or /playskip
-    if (playCommand) return { guildId, voiceChannel, member, error };
-    // checking if exists any queue from this guild
-    await errorChecker(!queue, noQueue);
-    return { guildId, queue, voiceChannel, member, error };
+    const { guild, guildId } = interaction;
+    if (!guild || !guildId) {
+        return replyWithError('This command can only be used in a server.');
+    }
+
+    if (!(await guildFetch(guildId))) {
+        return replyWithError(noGuildOnDB);
+    }
+
+    const member = await guild.members.fetch(interaction.user.id);
+    const voiceChannel = member.voice.channel;
+    if (!voiceChannel) {
+        return replyWithError(needVoiceChannel);
+    }
+
+    const player = lavalink.getPlayer(guildId);
+    if (playCommand) {
+        return { guildId, voiceChannel, member, player, error: false };
+    }
+
+    if (!player || !player.queue.current) {
+        return replyWithError(noQueue);
+    }
+
+    return { guildId, voiceChannel, member, player, error: false };
 };

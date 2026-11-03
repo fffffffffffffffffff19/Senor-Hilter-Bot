@@ -1,19 +1,19 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { shuffle } = require('../../audio/controls');
+const { sendTemporaryNotice } = require('../../audio/playerPanel');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
-    data: new SlashCommandBuilder().setName('shuffle').setDescription('Shuffle current queue.'),
+    data: new SlashCommandBuilder().setName('shuffle').setDescription('Shuffle the current queue'),
     async execute(interaction) {
-        // getting guildId, player queue and any error
-        const { queue, error } = await commandErrorHandler(interaction);
-        // returning if have any error
+        const { player, error } = await commandErrorHandler(interaction);
         if (error) return;
-        // shuffling the current queue
-        queue.tracks.shuffle();
-        // emiting a new event
-        queue.emit('shuffled', queue);
-        // replying interaction and deleting then
+
+        await shuffle(player);
         await interaction.deferReply();
+        await sendTemporaryNotice(interaction.client, interaction.guildId, {
+            content: 'Queue shuffled.',
+        });
         await interaction.deleteReply();
     },
 };

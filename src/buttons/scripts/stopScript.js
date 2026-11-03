@@ -1,16 +1,17 @@
+const { guildUpdate } = require('../../class/guildTemplate');
+const { resetPlayerPanel } = require('../../audio/playerPanel');
+const { stop } = require('../../audio/controls');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
     id: 'stopButton',
-    async execute(buttonInteraction) {
-        // getting guildId, player queue and any error
-        const { queue, error } = await commandErrorHandler(buttonInteraction);
-        // returning if have any error
+    async execute(interaction) {
+        const { player, guildId, error } = await commandErrorHandler(interaction);
         if (error) return;
-        // stopping current queue and emiting a new bot event
-        queue.emit('emptyQueue', queue);
-        // replying interaction and deleting then
-        await buttonInteraction.deferReply();
-        await buttonInteraction.deleteReply();
+
+        await guildUpdate({ guildId, autoplay: false, paused: false, repeatMode: false });
+        await stop(player);
+        await resetPlayerPanel(interaction.client, guildId);
+        await interaction.deferUpdate();
     },
 };

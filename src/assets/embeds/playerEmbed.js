@@ -21,18 +21,24 @@ module.exports = ({ track } = {}) => {
             .setTimestamp();
     }
 
-    return new EmbedBuilder()
-        .setAuthor({
-            name: '⋮ Now Playing ·',
-            iconURL: track.requestedBy.avatarURL(),
-        })
-        .setDescription(`[${track.title}](${track.url})\nDuration: ${track.duration}`)
+    const description = track.url
+        ? `[${track.title}](${track.url})\nDuration: ${track.duration}`
+        : `${track.title}\nDuration: ${track.duration}`;
+    const author = { name: '⋮ Now Playing ·' };
+    const avatar = track.requestedBy?.displayAvatarURL?.();
+    if (avatar) author.iconURL = avatar;
+
+    const embed = new EmbedBuilder()
+        .setAuthor(author)
+        .setDescription(description)
         .setImage(randomImage())
-        .setThumbnail(track.thumbnail)
         .setColor(color || '#FFFFFF')
         .setFooter({
             text: 'fffffffffffffffs • /help for all commands',
             iconURL: avatarURL,
         })
         .setTimestamp();
+
+    if (track.thumbnail) embed.setThumbnail(track.thumbnail);
+    return embed;
 };

@@ -1,0 +1,13 @@
+services:
+    lavalink:
+        image: ghcr.io/lavalink-devs/lavalink:4
+        restart: unless-stopped
+        environment:
+            SERVER_PORT: 2333
+            LAVALINK_PASSWORD: ${LAVALINK_PASSWORD:?Set LAVALINK_PASSWORD in .env}
+            SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:?Set SPOTIFY_CLIENT_ID in .env}
+            SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:?Set SPOTIFY_CLIENT_SECRET in .env}
+        ports:
+            - "127.0.0.1:${LAVALINK_PORT:-2333}:2333"
+        volumes:
+            - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro

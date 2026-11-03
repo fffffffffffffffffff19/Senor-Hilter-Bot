@@ -1,29 +1,46 @@
-const { Player } = require('discord-player');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { YoutubeiExtractor } = require('discord-player-youtubei');
-const { SpotifyExtractor, SoundCloudExtractor, AttachmentExtractor } = require('@discord-player/extractor');
+const { LavalinkManager } = require('lavalink-client');
+const clientConfig = require('../config');
 
-class SenorHilter {
-    constructor() {
-        this.client = new Client({
-            intents: [
-                GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMembers,
-                GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent,
-                GatewayIntentBits.GuildWebhooks,
-                GatewayIntentBits.GuildVoiceStates,
-            ],
-        });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.GuildVoiceStates,
+    ],
+});
 
-        this.player = new Player(this.client);
-        this.extractorRegister = this.player.extractors.loadMulti([
-            SpotifyExtractor,
-            YoutubeiExtractor,
-            SoundCloudExtractor,
-            AttachmentExtractor,
-        ]);
-    }
-}
+const lavalink = new LavalinkManager({
+    nodes: [
+        {
+            id: 'primary',
+            host: process.env.LAVALINK_HOST || '127.0.0.1',
+            port: Number(process.env.LAVALINK_PORT || 2333),
+            authorization: process.env.LAVALINK_PASSWORD,
+            secure: process.env.LAVALINK_SECURE === 'true',
+        },
+    ],
+    sendToShard: (guildId, payload) => {
+        const guild = client.guilds.cache.get(guildId);
+        if (guild) return guild.shard.send(payload);
+    },
+    autoSkip: true,
+    client: {
+        id: process.env.CLIENT_ID,
+        username: clientConfig.clientUsername,
+    },
+    playerOptions: {
+        defaultSearchPlatform: 'ytsearch',
+        onDisconnect: {
+            autoReconnect: true,
+            autoReconnectOnlyWithTracks: true,
+        },
+    },
+});
 
-module.exports = new SenorHilter();
+client.lavalink = lavalink;
+
+module.exports = { client, lavalink };

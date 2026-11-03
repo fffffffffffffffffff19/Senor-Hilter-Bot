@@ -7,9 +7,10 @@ module.exports = {
     name: Events.ClientReady,
     once: true,
     async execute(client) {
-        await client.user.setUsername(clientConfig.clientUsername);
-        // await client.user.setAvatar(clientConfig.avatarURL);
-        // await client.user.setBanner(clientConfig.bannerURL);
+        await client.lavalink.init({
+            id: client.user.id,
+            username: client.user.username,
+        });
         await client.user.setPresence({
             activities: [{ name: clientConfig.clientPresence }],
             status: clientConfig.clientStatus,
