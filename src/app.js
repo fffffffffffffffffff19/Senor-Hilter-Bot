@@ -6,7 +6,6 @@ const { findHandlers } = require('./class/fileExplorer');
 const { createLogger, fileName } = require('./class/logger');
 const database = require('./database/sequelize');
 const guildConfigDatabase = require('./database/models/guildConfig');
-const registerEvents = require('./handlers/events');
 const registerAudioEvents = require('./audio/events');
 
 async function start() {
@@ -26,19 +25,27 @@ async function start() {
         require(handler)(client);
     }
 
-    registerEvents(client);
     registerAudioEvents(client, lavalink);
 
     client.on('raw', (packet) => {
-        lavalink.sendRawData(packet).catch((error) => {
-            createLogger.error(fileName(__filename), error);
-        });
+        if (packet.t && client.ws) {
+            client.ws.emit(packet.t, packet.d);
+        }
+        if (typeof lavalink?.sendRawData === 'function') {
+            lavalink.sendRawData(packet).catch((error) => {
+                createLogger.error(fileName(__filename), error);
+            });
+        }
     });
 
     await client.login(process.env.TOKEN);
 }
 
-start().catch((error) => {
-    createLogger.error(fileName(__filename), error);
-    process.exitCode = 1;
-});
+if (require.main === module) {
+    start().catch((error) => {
+        createLogger.error(fileName(__filename), error);
+        process.exitCode = 1;
+    });
+}
+
+module.exports = start;

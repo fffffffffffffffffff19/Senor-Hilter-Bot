@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const { LavalinkManager } = require('lavalink-client');
+const LavalinkManager = require('./audio/lavalinkManager');
 const clientConfig = require('../config');
 
 const client = new Client({
@@ -13,37 +13,13 @@ const client = new Client({
     ],
 });
 
-const lavalink = new LavalinkManager({
-    nodes: [
-        {
-            id: 'primary',
-            host: process.env.LAVALINK_HOST || '127.0.0.1',
-            port: Number(process.env.LAVALINK_PORT || 2333),
-            authorization: process.env.LAVALINK_PASSWORD,
-            secure: process.env.LAVALINK_SECURE === 'true',
-        },
-    ],
-    sendToShard: (guildId, payload) => {
-        const guild = client.guilds.cache.get(guildId);
-        if (guild) return guild.shard.send(payload);
-    },
-    autoSkip: true,
-    linksBlacklist: [
-        /^https?:\/\/(?:[^/?#@]+@)?(?:localhost\.?|[^./:?#]+)(?::\d+)?(?:[/?#]|$)/i,
-        /^https?:\/\/(?:[^/?#@]+@)?(?:[a-z0-9-]+\.)*(?:localhost|local|internal|lan|home|home\.arpa)\.?(?::\d+)?(?:[/?#]|$)/i,
-        /^https?:\/\/(?:[^/?#@]+@)?(?:\[[^\]]+\]|(?:\d{1,3}\.){3}\d{1,3}|0x[0-9a-f]+|\d+)(?::\d+)?(?:[/?#]|$)/i,
-    ],
-    client: {
-        id: process.env.CLIENT_ID,
-        username: clientConfig.clientUsername,
-    },
-    playerOptions: {
-        defaultSearchPlatform: 'ytsearch',
-        onDisconnect: {
-            autoReconnect: true,
-            autoReconnectOnlyWithTracks: true,
-        },
-    },
+const lavalink = new LavalinkManager(client, {
+    host: process.env.LAVALINK_HOST || '127.0.0.1',
+    port: Number(process.env.LAVALINK_PORT || 2333),
+    password: process.env.LAVALINK_PASSWORD,
+    secure: process.env.LAVALINK_SECURE === 'true',
+    username: clientConfig.clientUsername,
+    clientId: process.env.CLIENT_ID,
 });
 
 client.lavalink = lavalink;
