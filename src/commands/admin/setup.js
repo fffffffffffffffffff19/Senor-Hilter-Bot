@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { guildCreate, guildFetch, guildGet, guildUpdate } = require('../../class/guildTemplate');
 const { clientUsername } = require('../../../config');
 const { createWebhook, fetchWebhook, getWebhook } = require('../../class/webhookManager');
@@ -51,7 +51,7 @@ module.exports = {
 
                     await interaction.editReply({
                         content: `A new music text channel as been created (<#${newChannel.id}>)`,
-                        ephemeral: true,
+                        flags: [MessageFlags.Ephemeral],
                     });
                 });
         }
@@ -85,7 +85,7 @@ module.exports = {
 
         await interaction.editReply({
             content: `There is already a music text channel. (<#${channel.id}>)`,
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
         });
     },
 };

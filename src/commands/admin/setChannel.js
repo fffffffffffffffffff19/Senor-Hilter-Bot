@@ -61,7 +61,7 @@ module.exports = {
 
         await interaction.reply({
             content: `A new bot player as created on <#${channelOption.id}>`,
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
         });
     },
 };

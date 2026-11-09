@@ -19,16 +19,16 @@ module.exports = (client) => {
 
         try {
             await interaction.client.buttons.get(interaction.customId).execute(interaction);
-        } catch (erro) {
+        } catch (error) {
             if (interaction.replied || interaction.deferred) {
-                createLogger.error(__filename, erro);
+                createLogger.error(__filename, error);
 
                 await interaction.followUp({
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,
                 });
             } else {
-                createLogger.error(__filename, erro);
+                createLogger.error(__filename, error);
 
                 await interaction.reply({
                     content: 'There was an error while executing this command!',

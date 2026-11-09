@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { toggleRepeat } = require('../../audio/controls');
-const repeatModeEmbed = require('../../assets/embeds/repeatModeEmbed');
 const { sendTemporaryNotice } = require('../../audio/playerPanel');
+const repeatModeEmbed = require('../../assets/embeds/repeatModeEmbed');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
@@ -11,6 +11,7 @@ module.exports = {
         if (error) return;
 
         const result = await toggleRepeat(player, guildId);
+
         if (result.error) {
             return interaction.reply({ content: result.error, flags: MessageFlags.Ephemeral });
         }

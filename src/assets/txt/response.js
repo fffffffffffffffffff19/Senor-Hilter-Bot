@@ -12,4 +12,5 @@ module.exports = {
     noPreviousSong: 'Not have previous song to play',
     disableAutoplay: 'You need to disable `/autoplay` to do this',
     disableRepeatMode: 'You need to disable `/repeat` to do this',
+    helpEmbed: require('../embeds/helpEmbed'),
 };

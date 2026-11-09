@@ -7,6 +7,7 @@ module.exports = {
     data: new SlashCommandBuilder().setName('previous').setDescription('Play the previous song'),
     async execute(interaction) {
         const { player, error } = await commandErrorHandler(interaction);
+
         if (error) return;
         if (!(await playPrevious(player))) {
             return interaction.reply({ content: noPreviousSong, flags: MessageFlags.Ephemeral });

@@ -2,8 +2,8 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { lavalink } = require('../../main');
 const { guildGet } = require('../../class/guildTemplate');
 const { createLogger, fileName } = require('../../class/logger');
-const commandErrorHandler = require('../../func/commandErrorHandler');
 const { noSongSearch } = require('../../assets/txt/response');
+const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
     data: new SlashCommandBuilder()

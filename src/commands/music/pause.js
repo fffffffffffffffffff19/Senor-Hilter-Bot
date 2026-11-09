@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { guildUpdate } = require('../../class/guildTemplate');
-const pausedEmbed = require('../../assets/embeds/pausedEmbed');
 const { sendTemporaryNotice } = require('../../audio/playerPanel');
 const { hasPaused } = require('../../assets/txt/response');
+const pausedEmbed = require('../../assets/embeds/pausedEmbed');
 const commandErrorHandler = require('../../func/commandErrorHandler');
 
 module.exports = {
