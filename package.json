@@ -13,7 +13,7 @@
         "release": "semantic-release",
         "lint": "eslint src",
         "test": "node --test",
-        "test:commands": "node --test test/commands.test.js"
+        "test:commands": "node --test src/test/commands.test.js"
     },
     "author": "fffffffffffffffffffffffffffffffs",
     "license": "ISC",
