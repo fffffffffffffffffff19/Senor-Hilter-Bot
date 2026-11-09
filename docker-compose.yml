@@ -11,3 +11,26 @@ services:
             - "127.0.0.1:${LAVALINK_PORT:-2333}:2333"
         volumes:
             - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
+        healthcheck:
+            test:
+                - CMD-SHELL
+                - 'curl --fail --silent --show-error -H "Authorization: $${LAVALINK_PASSWORD}" http://127.0.0.1:2333/v4/info >/dev/null'
+            interval: 5s
+            timeout: 3s
+            retries: 20
+            start_period: 10s
+
+    bot:
+        profiles:
+            - bot
+        build:
+            context: .
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            LAVALINK_HOST: lavalink
+            LAVALINK_PORT: 2333
+        depends_on:
+            lavalink:
+                condition: service_healthy

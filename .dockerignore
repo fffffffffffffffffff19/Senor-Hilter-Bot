@@ -1,0 +1,10 @@
+.env
+.env.*
+.git
+.gitignore
+.dockerignore
+node_modules
+coverage
+logs
+test
+*.sqlite
