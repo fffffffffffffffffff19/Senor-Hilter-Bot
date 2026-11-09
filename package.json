@@ -6,19 +6,21 @@
     "type": "commonjs",
     "scripts": {
         "start": "node ./src/app.js",
-        "dev": "nodemon ./src/app.js",
-        "pm2": "pm2 start ./src/app.js && pm2 monit",
-        "stop": "pm2 del app",
+        "start:dev": "nodemon ./src/app.js",
+        "start:pm2": "pm2 start ./src/app.js && pm2 monit",
+        "stop:pm2": "pm2 del app",
         "register-slash": "node ./src/commandRegister.js",
         "release": "semantic-release",
-        "lint": "eslint src"
+        "lint": "eslint src",
+        "test": "node --test",
+        "test:commands": "node --test test/commands.test.js"
     },
     "author": "fffffffffffffffffffffffffffffffs",
     "license": "ISC",
     "dependencies": {
+        "discord-lavalink": "^1.1.1",
         "discord.js": "^14.28.0",
         "dotenv": "^18.0.9",
-        "lavalink-client": "^2.11.0",
         "pm2": "^7.1.2",
         "sequelize": "^6.37.8",
         "sqlite3": "^6.0.1",
