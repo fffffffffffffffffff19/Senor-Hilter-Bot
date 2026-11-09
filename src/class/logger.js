@@ -1,11 +1,34 @@
 require('winston-daily-rotate-file');
 
-const { mkdirSync } = require('node:fs');
+const { mkdirSync, readdirSync, statSync, unlinkSync } = require('node:fs');
 const { resolve } = require('node:path');
 const { createLogger, format, transports } = require('winston');
 
 const logDirectory = resolve(process.cwd(), 'logs');
 mkdirSync(logDirectory, { recursive: true });
+
+const maxFiles = process.env.LOG_MAX_FILES || '14d';
+
+function pruneOldLogs(directory, retentionDays = 14) {
+    try {
+        const now = Date.now();
+        const maxAgeMs = retentionDays * 24 * 60 * 60 * 1000;
+        const files = readdirSync(directory);
+        for (const file of files) {
+            if (!file.endsWith('.log')) continue;
+            const filePath = resolve(directory, file);
+            const stats = statSync(filePath);
+            if (now - stats.mtimeMs > maxAgeMs) {
+                unlinkSync(filePath);
+            }
+        }
+    } catch {
+        // Ignore pruning errors
+    }
+}
+
+const retentionDays = parseInt(maxFiles, 10) || 14;
+pruneOldLogs(logDirectory, retentionDays);
 
 const logger = createLogger({
     format: format.combine(
@@ -24,6 +47,8 @@ const logger = createLogger({
             filename: resolve(logDirectory, 'error-%DATE%.log'),
             datePattern: 'DD-MM-YYYY',
             maxSize: '5m',
+            maxFiles,
+            auditFile: resolve(logDirectory, '.audit.json'),
         }),
         new transports.DailyRotateFile({
             format: format.uncolorize(),
@@ -31,6 +56,8 @@ const logger = createLogger({
             filename: resolve(logDirectory, 'warn-%DATE%.log'),
             datePattern: 'DD-MM-YYYY',
             maxSize: '5m',
+            maxFiles,
+            auditFile: resolve(logDirectory, '.audit.json'),
         }),
     ],
 });

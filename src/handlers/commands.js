@@ -1,6 +1,6 @@
 const { Collection, Events, MessageFlags } = require('discord.js');
 const { findCommands } = require('../class/fileExplorer');
-const { createLogger } = require('../class/logger');
+const { createLogger, fileName } = require('../class/logger');
 
 module.exports = (client) => {
     client.commands = new Collection();
@@ -21,13 +21,13 @@ module.exports = (client) => {
             await interaction.client.commands.get(interaction.commandName).execute(interaction);
         } catch (error) {
             if (interaction.replied || interaction.deferred) {
-                createLogger.error(__filename, error);
+                createLogger.error(fileName(__filename), error);
                 await interaction.followUp({
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,
                 });
             } else {
-                createLogger.error(__filename, error);
+                createLogger.error(fileName(__filename), error);
                 await interaction.reply({
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,

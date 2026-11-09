@@ -41,6 +41,14 @@ async function start() {
     await client.login(process.env.TOKEN);
 }
 
+process.on('unhandledRejection', (error) => {
+    createLogger.error('[UnhandledRejection] -', error);
+});
+
+process.on('uncaughtException', (error) => {
+    createLogger.error('[UncaughtException] -', error);
+});
+
 if (require.main === module) {
     start().catch((error) => {
         createLogger.error(fileName(__filename), error);
